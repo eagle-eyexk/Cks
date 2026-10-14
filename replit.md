@@ -1,15 +1,13 @@
-# [Project name]
+# CKS Crypto Klein Shop
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A browser-only, interactive cryptocurrency platform demo with an illustrative portfolio, sandbox trading, wallet previews, an activity journal, and digital-card concept.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- `pnpm --filter @workspace/cks-demo run dev` — run the CKS demo web app through its managed workflow
+- `pnpm --filter @workspace/cks-demo run typecheck` — typecheck the CKS frontend
+- `pnpm --filter @workspace/cks-demo run build` — build the static frontend
+- The CKS demo does not require API credentials or a database.
 
 ## Stack
 
@@ -22,15 +20,20 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/cks-demo/src/pages/` — dashboard, markets, sandbox trade, wallet, activity, card preview, and settings.
+- `artifacts/cks-demo/src/lib/demo-store.tsx` — seeded demo state, browser persistence, integer-unit helpers, and balanced per-asset journal entries.
+- `artifacts/cks-demo/src/index.css` — shared visual tokens and responsive styles.
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- This is a demo only: balances, prices, sends, trades, and card controls are illustrative and local to the browser. They must never imply that real financial services are connected.
+- Demo values persist in browser `localStorage`; there is no user authentication, API, exchange, blockchain, custody, issuer, or database integration.
+- Monetary calculations use integer EUR cents and atomic asset quantities; transaction details show balanced demo journal entries per asset.
+- Real financial operation requires authorized providers, security review, and jurisdiction-specific legal approval before any production integration.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+Customers can explore the illustrative portfolio, browse sample markets, simulate buy/sell/send flows, inspect transaction references and balanced journal entries, copy a non-routable receive identifier, preview card freeze controls, hide balances, change display currency, and reset the demo.
 
 ## User preferences
 

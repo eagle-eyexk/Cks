@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "CKS Crypto Klein Shop"
+description = "A premium, interactive cryptocurrency platform demo for exploring a portfolio, markets, sandbox trading, wallet transfers, transaction history, and a clearly labeled digital-card preview."
+version = "1.0.0"
+id = "artifacts/cks-demo"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22618
+
+[services.development]
+run = "pnpm --filter @workspace/cks-demo run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/cks-demo", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/cks-demo/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22618"
+BASE_PATH = "/"

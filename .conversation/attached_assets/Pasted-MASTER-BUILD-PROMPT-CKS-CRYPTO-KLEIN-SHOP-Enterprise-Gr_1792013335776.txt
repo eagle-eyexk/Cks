@@ -1,0 +1,844 @@
+MASTER BUILD PROMPT — CKS CRYPTO KLEIN SHOP
+
+Enterprise-Grade Cryptocurrency Exchange, Wallet, Payments & Digital Card Ecosystem
+
+ROLE AND MISSION
+
+Act as a principal software architect, senior full-stack engineer, blockchain engineer, fintech security specialist, UI/UX designer, DevOps engineer and quality assurance lead.
+
+Your mission is to design, implement, test and prepare for deployment CKS — Crypto Klein Shop, a complete cryptocurrency trading and financial technology platform.
+
+CKS must enable customers to buy, sell, store, send and receive supported cryptocurrencies, monitor their portfolio, manage transactions, and access a digital payment card through one unified experience.
+
+Build a real, maintainable software product with a modern frontend, production-oriented backend, database, financial ledger, blockchain integrations, external service integrations, administrative panel, security infrastructure, automated testing and deployment configuration.
+
+Do not stop at planning. Inspect the repository, create a detailed implementation plan, then execute the implementation in working increments. Continue until the core application runs, tests pass, and all incomplete integrations are clearly documented.
+
+⸻
+
+1. BRAND IDENTITY AND DESIGN SYSTEM
+
+Brand
+
+* Official name: CKS — Crypto Klein Shop
+* Industry: Cryptocurrency, digital wallets, trading and digital payments
+* Brand positioning: Trust, strength, stability, precision, transparency and European financial sophistication.
+* Brand personality: Established, premium, intelligent, secure and technologically advanced.
+
+Visual direction
+
+Create a timeless European financial brand inspired by classic German engineering, established financial institutions and modern fintech product design.
+
+Do NOT use a dark-first theme.
+
+Use:
+
+* Warm ivory and soft white as primary surfaces.
+* Champagne gold and restrained metallic gold as premium accents.
+* Deep navy or royal blue for authority, trust and important actions.
+* Soft emerald green for successful transactions and positive market movements.
+* Neutral graphite for text.
+* Light grey borders, subtle shadows and generous spacing.
+
+The interface must feel powerful without being aggressive, luxurious without being excessive, and modern without looking like a gaming website.
+
+Logo requirements
+
+Create a reusable brand identity system with:
+
+* CKS monogram.
+* Refined shield or heraldic emblem representing protection and stability.
+* Elegant European-inspired typography.
+* Full horizontal logo for the website header.
+* Compact symbol for mobile navigation and favicon.
+* Simplified icon for the application.
+* Monochrome and light-background variants.
+* Transparent-background logo asset when available.
+
+Do not rely on a raster logo as the entire interface. Implement the application logo as an interchangeable asset and use clean vector artwork where possible.
+
+UI/UX standards
+
+Build a responsive, accessible application with:
+
+* Desktop, tablet and mobile layouts.
+* Consistent design tokens and reusable components.
+* Clear navigation and intuitive financial workflows.
+* Professional charts, tables, dialogs, forms and transaction status indicators.
+* Keyboard navigation and visible focus states.
+* WCAG 2.2 AA accessibility targets.
+* Reduced-motion support.
+* Loading skeletons, empty states, errors, confirmation screens and retry mechanisms.
+* Localization-ready text and currency formatting.
+
+Avoid unnecessary animations, excessive gradients, neon effects, cluttered dashboards and artificial financial statistics.
+
+⸻
+
+2. TECHNOLOGY STACK
+
+Use a modern TypeScript-first architecture.
+
+Frontend
+
+* Next.js with App Router.
+* React and TypeScript in strict mode.
+* Tailwind CSS.
+* shadcn/ui or equivalent accessible components.
+* React Hook Form and Zod for form validation.
+* TanStack Query for server-state management.
+* TradingView Lightweight Charts or an equivalent chart library.
+* A maintained icon library such as Lucide.
+
+Backend
+
+* Node.js and NestJS.
+* REST APIs documented using OpenAPI/Swagger.
+* WebSockets for real-time prices, order updates and notifications.
+* Modular architecture with strict module boundaries.
+* Background processing for blockchain events, webhooks, reconciliation and notifications.
+
+Start with a modular monolith. Avoid premature microservices while preserving the ability to extract independently scalable services later.
+
+Data and infrastructure
+
+* PostgreSQL as the authoritative transactional database.
+* Prisma or TypeORM with explicit, reviewed database migrations.
+* Redis for caching, rate limiting and appropriate short-lived coordination.
+* A durable job queue for asynchronous financial operations.
+* Docker and Docker Compose for local development.
+* GitHub Actions or equivalent CI/CD.
+* Structured logging, application metrics and error monitoring.
+* Managed cloud infrastructure with encrypted secrets and automated backups.
+
+Pin compatible dependency versions and verify all APIs against current official documentation. Never invent SDK methods or rely on deprecated packages.
+
+⸻
+
+3. APPLICATION STRUCTURE
+
+Create a monorepo with a clear separation of responsibilities.
+
+Recommended layout:
+
+apps/
+web/
+api/
+worker/
+
+packages/
+ui/
+shared/
+validation/
+config/
+types/
+
+infrastructure/
+docker/
+deployment/
+monitoring/
+
+docs/
+architecture/
+api/
+security/
+operations/
+
+tests/
+integration/
+e2e/
+security/
+
+Adapt this structure to the existing repository if it already has a working architecture. Do not overwrite or destroy existing functionality without inspecting it first.
+
+The web application, API and worker must have independent configuration, logging and health checks.
+
+Provide:
+
+* .env.example with placeholders only.
+* Database schema and migrations.
+* Seed scripts containing explicitly marked demo data.
+* API documentation.
+* Local development instructions.
+* Production deployment documentation.
+* CI checks and test commands.
+
+Never commit secrets, real private keys, API credentials or production customer information.
+
+⸻
+
+4. PUBLIC WEBSITE
+
+Build a premium marketing website with these pages:
+
+1. Home.
+2. Markets.
+3. Buy cryptocurrency.
+4. Sell cryptocurrency.
+5. Wallet features.
+6. Send and receive.
+7. CKS Digital Card.
+8. Security.
+9. Fees and limits.
+10. About CKS.
+11. Help center.
+12. Contact.
+13. Terms of service.
+14. Privacy policy.
+15. Risk disclosures.
+16. Compliance information.
+
+The homepage should include:
+
+* Premium CKS branding.
+* A clear explanation of the platform.
+* A prominent registration action.
+* Product feature sections.
+* Supported assets and networks where verified.
+* Security and transparency information.
+* Market data only when supplied by a functioning provider.
+* Clear risk disclosures and legal links.
+
+Do not invent licenses, insurance, partnerships, certifications, regulatory approvals or claims that customer funds are guaranteed.
+
+⸻
+
+5. CUSTOMER APPLICATION
+
+Implement a complete authenticated dashboard.
+
+Dashboard
+
+Display:
+
+* Total portfolio valuation.
+* Individual asset balances.
+* Available and reserved balances.
+* Portfolio allocation.
+* Historical portfolio performance when reliable historical data exists.
+* Live market prices and price movements.
+* Recent transactions.
+* Pending deposits and withdrawals.
+* Security notifications.
+* Quick actions for buying, selling, sending and receiving.
+
+Support hiding sensitive balances.
+
+Do not calculate portfolio value from fabricated prices or imply that illustrative balances are real.
+
+Authentication and accounts
+
+Implement:
+
+* Registration and login.
+* Email verification.
+* Secure password hashing.
+* Password reset.
+* Multi-factor authentication.
+* Optional passkey support.
+* Session and device management.
+* Account recovery.
+* Rate limiting and brute-force protection.
+* Role and permission enforcement.
+* Account closure and data-management workflows where applicable.
+
+Use secure, HTTP-only cookies for browser sessions where appropriate. Never store authentication secrets or privileged tokens in browser local storage.
+
+Profile and verification
+
+Implement:
+
+* Personal information.
+* Residency and country selection.
+* Identity verification workflow.
+* Verification status and reason codes.
+* Required-document status.
+* Account limits and restrictions.
+* Secure communication with a KYC provider.
+
+Do not build a fake verification process that automatically approves every user. Use a provider sandbox during development and the real provider’s authorized workflow in production.
+
+⸻
+
+6. CRYPTOCURRENCY MARKETS AND TRADING
+
+Implement a proper market and trading module.
+
+Market data
+
+Create a provider abstraction for:
+
+* Live asset prices.
+* Trading pairs.
+* Market statistics.
+* Historical price candles.
+* Volume and liquidity information.
+* Price timestamps and source attribution.
+* Stale-data detection and provider health.
+
+Use a legitimate market data provider and implement reconnection, caching, timeouts, rate-limit handling and fallback behavior.
+
+Never present stale or unavailable market data as live.
+
+Buy and sell
+
+Implement:
+
+* Asset and payment-currency selection.
+* Quote generation.
+* Quote expiration.
+* Exchange-rate calculation.
+* Explicit fee and spread disclosure.
+* Order preview.
+* Customer confirmation.
+* Order status and history.
+* Failure handling and reconciliation.
+* Trade receipts.
+
+Support market and limit orders only where the connected execution provider supports them.
+
+Integrate a real liquidity or execution provider for actual trading. If none is configured, provide a clearly labeled sandbox mode that cannot move real money.
+
+Do not create fake order fills, artificial market depth or fictional trading volume.
+
+⸻
+
+7. CKS WALLET INFRASTRUCTURE
+
+Treat wallet functionality as a financial system, not a UI feature.
+
+Implement a wallet orchestration module with provider adapters.
+
+Wallet capabilities
+
+* Asset balances.
+* Deposit address generation where supported.
+* Deposit address and network display.
+* Receive screens with QR codes.
+* Send screens with address validation.
+* Supported-network selection.
+* Token and network compatibility checks.
+* Fee estimation.
+* Minimum and maximum transfer limits.
+* Transaction status and confirmation tracking.
+* Transaction IDs and blockchain explorer links.
+* Withdrawal history.
+* Failed and delayed transfer handling.
+* Reconciliation and customer notifications.
+
+Initially support only networks and assets that have been fully integrated and tested. Do not imply that every token or network is supported.
+
+Custody architecture
+
+Make the custody model explicit before enabling transactions.
+
+For a custodial model:
+
+* Integrate an appropriate wallet or custody infrastructure provider.
+* Keep signing keys outside the application database.
+* Use an HSM, managed key service or qualified custody infrastructure as appropriate.
+* Apply transaction policies and withdrawal limits.
+* Implement withdrawal risk checks and approval workflows.
+* Monitor blockchain confirmations and provider events.
+* Reconcile internal balances with external asset holdings.
+
+For a non-custodial model, use a suitable wallet SDK and ensure users retain control of their private keys.
+
+Never invent private keys, derive production keys from predictable values, log secrets, expose signing credentials to the frontend or implement insecure cryptographic shortcuts.
+
+Use test networks and provider sandboxes during development.
+
+⸻
+
+8. FINANCIAL LEDGER AND ACCOUNTING
+
+Build a double-entry financial ledger before enabling real financial operations.
+
+This is a critical architectural requirement.
+
+Ledger principles
+
+* Every financial movement creates balanced debit and credit entries.
+* Each ledger transaction is atomic.
+* Posted ledger entries are immutable.
+* Corrections use traceable reversing entries rather than editing historical records.
+* Monetary amounts use exact decimal arithmetic or integer base units, never JavaScript floating-point calculations.
+* Every entry records its asset, account, transaction reference and timestamps.
+* Available, reserved and pending amounts are tracked consistently.
+* Internal transfers preserve accounting integrity.
+* Reconciliation compares internal records against provider and blockchain data.
+
+Implement:
+
+* Ledger accounts.
+* Journal transactions.
+* Journal entries.
+* Customer asset balances.
+* Pending and reserved funds.
+* Deposit accounting.
+* Withdrawal accounting.
+* Trade settlement.
+* Fees and commissions.
+* Reversals and refunds where appropriate.
+* Reconciliation reports.
+* Suspense accounts for unresolved movements.
+
+Add database constraints and tests that prevent unbalanced transactions, duplicate processing and negative available balances where prohibited.
+
+Use idempotency keys for all money-moving APIs. Protect concurrent operations with appropriate database transactions, row locking or equivalent concurrency controls.
+
+Never let the frontend directly set a user’s balance.
+
+⸻
+
+9. SEND AND RECEIVE WORKFLOWS
+
+Implement a complete transaction lifecycle.
+
+1. Customer selects an asset and network.
+2. System validates the destination and account eligibility.
+3. System retrieves a current fee estimate.
+4. System checks balance, limits and available funds.
+5. Customer sees the full transaction preview.
+6. Customer explicitly confirms.
+7. Additional authentication is required when appropriate.
+8. The backend reserves funds atomically.
+9. Risk and compliance checks are performed.
+10. The signing provider authorizes and signs the transaction.
+11. The transaction is broadcast.
+12. The worker monitors provider events and blockchain confirmations.
+13. The ledger is updated through an idempotent workflow.
+14. The transaction becomes completed, failed or requires review.
+15. The customer receives an accurate status notification.
+
+Use explicit state transitions and prevent invalid transitions.
+
+Handle provider timeouts, webhook retries, duplicate events, chain reorganizations, stuck transactions, insufficient gas and ambiguous broadcast outcomes.
+
+Never release reserved funds merely because a request timed out. Reconcile uncertain outcomes before deciding whether funds should be released.
+
+Receiving crypto must support pending, confirmed and failed states with configurable confirmation requirements.
+
+⸻
+
+10. CKS DIGITAL CARD
+
+Build a dedicated digital-card module with a provider abstraction.
+
+Customer functionality
+
+* Card application.
+* Eligibility and identity checks.
+* Card status.
+* Card activation.
+* Card details through a secure provider flow.
+* Freeze and unfreeze.
+* Spending limits where supported.
+* Transaction history.
+* Merchant and authorization status.
+* Card payment notifications.
+* Refund and reversal tracking.
+* Card replacement and cancellation where supported.
+
+Integrate an authorized card issuer or issuing processor.
+
+If crypto-to-fiat spending is offered, implement the actual conversion, authorization, settlement, exchange-rate and fee workflows supported by that partner.
+
+Do not generate fake payment-card numbers or pretend that a visual card can make purchases.
+
+Do not store CVV or other sensitive authentication data. Keep cardholder data within appropriately certified provider-hosted interfaces wherever possible.
+
+Clearly label prototype card functionality until real issuing infrastructure is available.
+
+⸻
+
+11. ADMINISTRATION AND OPERATIONS
+
+Build a separate admin application with role-based access control.
+
+Modules
+
+* Operational overview.
+* Customer management.
+* KYC and AML case management.
+* Account restrictions.
+* Deposit monitoring.
+* Withdrawal review and approval.
+* Ledger inspection.
+* Reconciliation.
+* Trading and liquidity status.
+* Supported asset and network configuration.
+* Fee configuration.
+* Card-provider events.
+* Customer support.
+* Risk alerts.
+* Audit logs.
+* System health.
+* Operational reporting.
+
+Administrative safeguards
+
+* Separate customer and administrator authorization.
+* Mandatory MFA for privileged users.
+* Least-privilege permissions.
+* Dual approval for high-risk financial operations where appropriate.
+* No direct, unaudited balance modification.
+* No unrestricted private-key access.
+* Immutable or tamper-evident audit logging.
+* Explicit reason codes for sensitive actions.
+* Alerts for suspicious privileged activity.
+
+Admin dashboard statistics must come from real database queries or clearly identified demo data.
+
+⸻
+
+12. SECURITY AND COMPLIANCE
+
+Apply secure development practices throughout the project.
+
+Implement protections against:
+
+* Broken access control.
+* IDOR and cross-account data access.
+* Injection attacks.
+* Cross-site scripting.
+* CSRF where applicable.
+* SSRF.
+* Brute-force attacks.
+* Credential stuffing.
+* Replay attacks.
+* Webhook spoofing.
+* Duplicate payment processing.
+* Race conditions.
+* Unauthorized withdrawals.
+* Secrets exposure.
+* Dependency vulnerabilities.
+* Privilege escalation.
+* Abuse of public APIs.
+
+Security requirements:
+
+* Validate inputs on the server.
+* Enforce ownership and authorization on every sensitive resource.
+* Encrypt data in transit and sensitive data at rest.
+* Store secrets in a managed secret store.
+* Verify webhook signatures.
+* Use timestamps and replay protection where supported.
+* Apply API rate limits.
+* Maintain audit trails.
+* Back up databases and test restoration.
+* Run dependency and static security scans.
+* Define incident-response and disaster-recovery procedures.
+
+Use the OWASP ASVS and applicable OWASP guidance as security baselines.
+
+Compliance
+
+Design for jurisdiction-specific requirements, including applicable:
+
+* KYC and AML.
+* Sanctions screening.
+* Transaction monitoring.
+* Recordkeeping.
+* Data protection.
+* Consumer disclosures.
+* Crypto-asset service licensing.
+* Payment and electronic-money regulations.
+* Card industry obligations.
+
+Do not assume that compliance in one jurisdiction authorizes operation in another.
+
+Before real customer transactions are enabled, verify the legal permissions and contractual requirements for the launch jurisdictions, including Kosovo where relevant.
+
+⸻
+
+13. DATABASE DESIGN
+
+Create a normalized, documented schema with migrations.
+
+Include appropriate models for:
+
+* Users.
+* Authentication sessions.
+* MFA credentials.
+* Devices.
+* Roles and permissions.
+* Verification cases.
+* Assets.
+* Networks.
+* Trading pairs.
+* Market-data records where needed.
+* Wallets.
+* Deposit addresses.
+* Ledger accounts.
+* Journal transactions.
+* Journal entries.
+* Orders.
+* Trades.
+* Quotes.
+* Deposits.
+* Withdrawals.
+* Blockchain transactions.
+* Fee schedules.
+* Card accounts.
+* Card transactions.
+* Provider webhooks.
+* Notifications.
+* Support tickets.
+* Risk cases.
+* Reconciliation runs.
+* Audit events.
+
+Use unique constraints, foreign keys, appropriate indexes, explicit transaction boundaries and precise financial types.
+
+Define retention policies and privacy controls for sensitive personal data.
+
+Do not store external provider credentials in ordinary database records.
+
+⸻
+
+14. API DESIGN
+
+Implement versioned APIs, starting with /api/v1.
+
+Provide appropriate endpoints for:
+
+* Authentication.
+* Customer profile.
+* Verification status.
+* Asset catalog.
+* Market data.
+* Quotes.
+* Orders.
+* Trades.
+* Portfolio.
+* Wallets.
+* Deposits.
+* Withdrawals.
+* Internal transfers.
+* Transaction history.
+* Card operations.
+* Notifications.
+* Support.
+* Administrative operations.
+
+Every endpoint must include:
+
+* Request validation.
+* Authentication where required.
+* Authorization.
+* Defined response schemas.
+* Consistent error handling.
+* Pagination where appropriate.
+* Rate limiting.
+* Audit logging for sensitive actions.
+* Idempotency protection for financial operations.
+
+Use OpenAPI to document request and response types.
+
+Do not expose internal provider credentials, signing infrastructure, privileged debug information or sensitive personal data.
+
+⸻
+
+15. REAL-TIME FUNCTIONALITY
+
+Use WebSockets or equivalent event-driven delivery for:
+
+* Market prices.
+* Order status changes.
+* Deposit confirmations.
+* Withdrawal status.
+* Card transaction events.
+* Notifications.
+* System health indicators.
+
+Authenticate connections and authorize subscriptions.
+
+Use reconnection logic, event identifiers, deduplication and server-side event validation.
+
+Persist important events before publishing them. Use a transactional outbox or an equivalent reliable event-publishing strategy when appropriate.
+
+The frontend must remain usable if a live connection fails and clearly show when information is stale.
+
+⸻
+
+16. AUTOMATED TESTING
+
+Create a real testing strategy.
+
+Unit tests
+
+Test financial calculations, fee calculations, quote expiration, state transitions, validation, permissions and ledger invariants.
+
+Integration tests
+
+Test database transactions, provider adapters, webhook signatures, duplicate events, authentication, wallet workflows and trading settlement.
+
+End-to-end tests
+
+Test:
+
+* Registration and login.
+* MFA.
+* Dashboard navigation.
+* Market-data display.
+* Quote generation.
+* Sandbox buy and sell.
+* Internal transfers.
+* Sandbox deposits and withdrawals.
+* Transaction history.
+* Card sandbox workflows.
+* Admin permissions.
+* Failure handling.
+
+Financial and security tests
+
+Verify:
+
+* Every posted journal transaction balances.
+* Duplicate requests do not double-charge or double-credit.
+* Concurrent withdrawals cannot overspend available balances.
+* Users cannot access another user’s wallet or transactions.
+* Invalid webhook signatures are rejected.
+* Failed and ambiguous transfers are reconciled safely.
+* Unauthorized users cannot perform privileged actions.
+* Secrets never appear in client bundles or logs.
+
+Use realistic sandbox scenarios. Never use real funds or production signing keys in automated tests.
+
+Do not claim a test passed unless it was actually executed and its result was inspected.
+
+⸻
+
+17. DEVOPS AND DEPLOYMENT
+
+Prepare:
+
+* Local development environment.
+* Docker Compose services.
+* Database migrations.
+* Development seed data.
+* CI checks.
+* Automated tests.
+* Production build.
+* Environment-specific configuration.
+* Health and readiness endpoints.
+* Structured logs.
+* Metrics and alerting.
+* Backup and recovery instructions.
+* Deployment runbooks.
+* Rollback procedures.
+
+Deploy the web application and API using an appropriate hosting architecture. Vercel may host the Next.js frontend; use a suitable backend hosting environment for long-running API services, workers and required persistent connections.
+
+Never place database passwords, private keys, signing secrets or provider credentials in frontend environment variables.
+
+Use staging environments before production deployment.
+
+Production deployment must be gated by explicit configuration, successful tests, security review and the required legal and provider approvals.
+
+⸻
+
+18. IMPLEMENTATION EXECUTION RULES
+
+Follow this order.
+
+Phase A — Repository inspection
+
+1. Inspect the existing files, package manifests and architecture.
+2. Identify the current framework, existing features and incomplete work.
+3. Run available tests and builds.
+4. Record problems before changing the project.
+5. Preserve working functionality.
+6. Produce a concise architecture and implementation plan.
+
+Phase B — Foundation
+
+1. Establish the design system.
+2. Build shared components.
+3. Implement authentication.
+4. Create the database schema and migrations.
+5. Establish API validation, authorization and error handling.
+6. Add logging, configuration and health checks.
+
+Phase C — Financial core
+
+1. Implement the ledger.
+2. Implement internal transfers.
+3. Implement market-data adapters.
+4. Implement sandbox quotes and trading.
+5. Implement wallet-provider abstractions.
+6. Implement webhook processing and reconciliation.
+
+Phase D — Product features
+
+1. Complete the customer dashboard.
+2. Complete buy and sell workflows.
+3. Complete wallet and transaction history.
+4. Complete send and receive workflows.
+5. Implement the card sandbox integration.
+6. Complete customer notifications and support.
+
+Phase E — Administration and hardening
+
+1. Complete the admin application.
+2. Implement risk and compliance workflows.
+3. Run security tests.
+4. Run integration and end-to-end tests.
+5. Fix build errors and failing tests.
+6. Verify deployment configuration.
+7. Document every incomplete external dependency.
+
+After each phase, run the relevant tests and fix regressions before proceeding.
+
+If an external provider requires API keys, account approval or paid access, implement its adapter and sandbox workflow where possible. Document the exact setup needed. Never invent credentials or claim a live integration is active when it is not.
+
+Do not stop after generating a plan, a homepage, a database schema or a few demonstration screens. Continue implementation across the available scope.
+
+⸻
+
+19. DEFINITION OF DONE
+
+The project is complete only when:
+
+* The frontend builds successfully.
+* The backend starts successfully.
+* Database migrations work on a clean environment.
+* Authentication and authorization are tested.
+* Dashboard information comes from the backend.
+* Financial operations use the ledger.
+* Trading and wallet workflows have functioning sandbox integrations.
+* Provider webhooks are authenticated and idempotent.
+* The digital-card module has a working sandbox workflow.
+* The admin panel enforces its permissions.
+* Errors, loading states and empty states are implemented.
+* Automated tests have been executed and results documented.
+* No unresolved critical security findings are knowingly ignored.
+* Deployment and recovery instructions are available.
+* Demo functionality is clearly distinguished from live financial services.
+
+Do not claim that CKS is production-ready merely because the website looks finished.
+
+⸻
+
+20. FINAL INSTRUCTION TO THE AI CODING AGENT
+
+Start by inspecting the repository and understanding the existing implementation.
+
+Then produce a short execution plan, identify dependencies and risks, and immediately begin implementing the highest-priority phase.
+
+Work directly in the available project files. Use maintainable architecture, strict types, reusable components, clear naming and production-quality error handling.
+
+When encountering uncertainty, choose the safest practical implementation and document the decision. Ask for clarification only when a decision genuinely blocks progress or could materially change the financial architecture.
+
+At the end of every implementation phase, report:
+
+* What was implemented.
+* Which files were created or changed.
+* Which integrations are real, simulated or still pending.
+* Which commands were run.
+* Which tests passed or failed.
+* Which environment variables are required.
+* What remains before the next phase.
+
+The objective is not a mockup. The objective is CKS: a complete, secure, testable and extensible cryptocurrency platform built on sound financial engineering, with a premium European identity and a credible path to authorized live operation.
