@@ -1,7 +1,9 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { AlertCircle } from 'lucide-react';
+import { usePageMetadata } from '@/components/shell';
 
 export default function NotFound() {
+  usePageMetadata('Page not found', 'This CKS demo page does not exist. Return to the dashboard to continue exploring the sandbox.');
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gray-50">
       <Card className="w-full max-w-md mx-4">

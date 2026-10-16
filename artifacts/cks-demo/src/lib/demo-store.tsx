@@ -1,58 +1,16 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import {
+  buildLedgerEntries,
+  parsePersistedDemoState,
+  serializeDemoState,
+  type DemoState,
+  type DemoTransaction,
+} from './demo-persistence';
+export type { DemoState, DemoTransaction, LedgerEntry } from './demo-persistence';
 
 export type Asset = { id: string; symbol: string; name: string; demoPriceEurMinor: number; quantityAtomic: number; decimals: number; changePercentIllustrative: number; color: string; icon: string };
-export type LedgerEntry = { id: string; assetSymbol: string; account: string; side: 'debit' | 'credit'; quantityAtomic: number };
-export type DemoTransaction = { id: string; type: 'buy' | 'sell' | 'send' | 'receive' | 'card'; assetSymbol: string; quantityAtomic: number; amountEurMinor: number; feeEurMinor: number; status: string; reference: string; createdAt: string; note: string; ledgerEntries: LedgerEntry[] };
-export type DemoState = { balances: Record<string, number>; transactions: DemoTransaction[]; hiddenBalances: boolean; displayCurrency: string; cardFrozen: boolean; cardApplied?: boolean };
 const KEY = 'cks-demo-state-v1';
 const now = Date.now();
-function buildLedgerEntries(type: DemoTransaction['type'], symbol: string, quantity: number, amount: number, fee: number): LedgerEntry[] {
-  const entries: LedgerEntry[] = [];
-  const post = (assetSymbol: string, account: string, side: LedgerEntry['side'], value: number) => {
-    if (value > 0) entries.push({ id: `entry-${entries.length + 1}`, assetSymbol, account, side, quantityAtomic: value });
-  };
-  if (type === 'buy') {
-    post('EUR', 'Customer EUR balance', 'debit', amount + fee);
-    post('EUR', 'Demo settlement', 'credit', amount);
-    post('EUR', 'Demo fee revenue', 'credit', fee);
-    post(symbol, 'Demo asset inventory', 'debit', quantity);
-    post(symbol, `Customer ${symbol} balance`, 'credit', quantity);
-  } else if (type === 'sell') {
-    post(symbol, `Customer ${symbol} balance`, 'debit', quantity);
-    post(symbol, 'Demo asset inventory', 'credit', quantity);
-    post('EUR', 'Demo settlement', 'debit', amount);
-    post('EUR', 'Customer EUR balance', 'credit', amount - fee);
-    post('EUR', 'Demo fee revenue', 'credit', fee);
-  } else if (type === 'send') {
-    if (symbol === 'EUR') {
-      post('EUR', 'Customer EUR balance', 'debit', quantity + fee);
-      post('EUR', 'Demo outbound clearing', 'credit', quantity);
-      post('EUR', 'Demo fee revenue', 'credit', fee);
-    } else {
-      post(symbol, `Customer ${symbol} balance`, 'debit', quantity);
-      post(symbol, 'Demo outbound clearing', 'credit', quantity);
-      post('EUR', 'Customer EUR balance', 'debit', fee);
-      post('EUR', 'Demo fee revenue', 'credit', fee);
-    }
-  } else if (type === 'receive') {
-    post(symbol, 'Demo receive clearing', 'debit', quantity);
-    post(symbol, `Customer ${symbol} balance`, 'credit', quantity);
-  } else {
-    post('EUR', 'Customer EUR balance', 'debit', amount + fee);
-    post('EUR', 'Demo card settlement', 'credit', amount);
-    post('EUR', 'Demo fee revenue', 'credit', fee);
-  }
-  const totals = new Map<string, { debit: number; credit: number }>();
-  for (const entry of entries) {
-    const total = totals.get(entry.assetSymbol) ?? { debit: 0, credit: 0 };
-    total[entry.side] += entry.quantityAtomic;
-    totals.set(entry.assetSymbol, total);
-  }
-  if ([...totals.values()].some(total => total.debit !== total.credit)) {
-    throw new Error('Demo ledger transaction is not balanced by asset.');
-  }
-  return entries;
-}
 export const assetCatalog: Asset[] = [
   { id:'bitcoin',symbol:'BTC',name:'Bitcoin',demoPriceEurMinor:6254000,quantityAtomic:3820000,decimals:8,changePercentIllustrative:2.38,color:'#d9a24a',icon:'₿' },
   { id:'ethereum',symbol:'ETH',name:'Ethereum',demoPriceEurMinor:328700,quantityAtomic:124000000,decimals:8,changePercentIllustrative:1.16,color:'#7185ad',icon:'Ξ' },
@@ -68,19 +26,52 @@ export const seedState: DemoState = {
   ],
   hiddenBalances:false, displayCurrency:'EUR', cardFrozen:false, cardApplied:false
 };
-export function readDemoState(): DemoState {
-  if (typeof window === 'undefined') return seedState;
-  try { const value=localStorage.getItem(KEY); if(value){const parsed=JSON.parse(value) as DemoState; if(parsed?.balances&&Array.isArray(parsed.transactions))return{...parsed,transactions:parsed.transactions.map(tx=>({...tx,ledgerEntries:buildLedgerEntries(tx.type,tx.assetSymbol,tx.quantityAtomic,tx.amountEurMinor,tx.feeEurMinor)}))};} } catch { /* restore seed for invalid sandbox data */ }
-  return seedState;
+type InitialDemoState = {
+  state: DemoState;
+  recovered: boolean;
+  storageAvailable: boolean;
+};
+
+function readInitialDemoState(): InitialDemoState {
+  if (typeof window === 'undefined') {
+    return { state: seedState, recovered: false, storageAvailable: false };
+  }
+
+  try {
+    const parsed = parsePersistedDemoState(window.localStorage.getItem(KEY));
+    return {
+      state: parsed.state ?? seedState,
+      recovered: parsed.invalid,
+      storageAvailable: true,
+    };
+  } catch {
+    return { state: seedState, recovered: false, storageAvailable: false };
+  }
 }
-type Store = { state: DemoState; update: (fn:(s:DemoState)=>DemoState)=>void; reset:()=>void; toast:(message:string)=>void; notice:string; dismiss:()=>void };
+
+export function readDemoState(): DemoState {
+  return readInitialDemoState().state;
+}
+
+type Store = { state: DemoState; update: (fn:(s:DemoState)=>DemoState)=>void; reset:()=>void; toast:(message:string)=>void; notice:string; dismiss:()=>void; storageAvailable:boolean };
 const DemoContext=createContext<Store | null>(null);
 export function DemoProvider({children}:{children:ReactNode}) {
-  const [state,setState]=useState<DemoState>(readDemoState);
-  const [notice,setNotice]=useState('');
-  useEffect(()=>{localStorage.setItem(KEY,JSON.stringify(state));},[state]);
+  const [initial] = useState(readInitialDemoState);
+  const [state,setState]=useState<DemoState>(initial.state);
+  const [notice,setNotice]=useState(initial.recovered
+    ? 'Saved demo data was invalid; the starter scenario has been restored.'
+    : initial.storageAvailable ? '' : 'Browser storage is unavailable; changes may not persist after this tab closes.');
+  const [storageAvailable,setStorageAvailable]=useState(initial.storageAvailable);
+  useEffect(()=>{
+    try {
+      window.localStorage.setItem(KEY,serializeDemoState(state));
+      setStorageAvailable(true);
+    } catch {
+      setStorageAvailable(false);
+    }
+  },[state]);
   useEffect(()=>{if(!notice)return;const timer=window.setTimeout(()=>setNotice(''),3200);return()=>window.clearTimeout(timer)},[notice]);
-  const value=useMemo(()=>({state,update:(fn:(s:DemoState)=>DemoState)=>setState(s=>fn(s)),reset:()=>{setState({...seedState,transactions:seedState.transactions.map(t=>({...t}))});setNotice('Demo scenario restored to its original state.');},toast:(m:string)=>setNotice(m),notice,dismiss:()=>setNotice('')}),[state,notice]);
+  const value=useMemo(()=>({state,update:(fn:(s:DemoState)=>DemoState)=>setState(s=>fn(s)),reset:()=>{setState({...seedState,transactions:seedState.transactions.map(t=>({...t}))});setNotice('Demo scenario restored to its original state.');},toast:(m:string)=>setNotice(m),notice,dismiss:()=>setNotice(''),storageAvailable}),[state,notice,storageAvailable]);
   return <DemoContext.Provider value={value}>{children}</DemoContext.Provider>;
 }
 export function useDemo(){const value=useContext(DemoContext);if(!value)throw new Error('DemoProvider is missing');return value;}

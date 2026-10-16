@@ -1,0 +1,726 @@
+CKS Crypto Klein Shop — Technical Audit & Full Rebuild Plan
+
+I’ve inspected your live demo link and the source code in your GitHub repository. My recommendation is to keep the existing project as the foundation, fix its functional weaknesses, and then upgrade it into a much more complete crypto-finance platform.
+
+CKS — Crypto Klein Shop
+
+Project: React + TypeScript + Vite · pnpm monorepo
+
+A clean, German-style financial platform with portfolio management, markets, simulated trading, a wallet, transaction history, digital-card previews, and settings.
+
+Working foundationDemo only
+
+[Open the live demo](https://cks-crypto-klein-shop-demo--pellazgoshop.replit.app/?utm_source=chatgpt.com)⁠￼
+
+Inspect the GitHub repository⁠￼
+
+1. What is actually failing?
+
+The most important finding is that your repository describes the product as a browser-only simulation, not a functioning cryptocurrency exchange. The app’s own documentation explicitly states that it has no authentication, connected exchange, blockchain, custody provider, or production database integration.
+
+I could reach the deployed URL, but the web inspection tool did not expose its rendered page content. Therefore, I cannot honestly claim to have reproduced every live UI error or verified every interaction in a real browser. The findings below distinguish confirmed architectural limitations from issues that still require testing.
+
+Priority failure list
+
+1. Wallet is not a real wallet
+
+Critical
+
+Sending, receiving, and balances are simulated locally. The recipient field is not connected to a blockchain, and the receive identifier is explicitly non-routable.
+
+Evidence: artifacts/cks-demo/src/pages/wallet.tsx
+
+2. No persistent user accounts
+
+Critical
+
+Portfolio state is saved in browser localStorage. There is no implemented account system that synchronizes balances and transactions across devices or protects individual user data on a server.
+
+Evidence: artifacts/cks-demo/src/lib/demo-store.tsx
+
+3. Prices and performance are illustrative
+
+High
+
+Market prices, price changes, and portfolio charts use predefined demo values. They should not be presented as live market data.
+
+Evidence: artifacts/cks-demo/src/lib/demo-store.tsx and dashboard.tsx
+
+4. Digital card is a concept, not an issued card
+
+High
+
+The current app includes a card-preview experience, but that alone does not provide card issuance, authorization, settlement, or a connection to a payment network.
+
+5. No production financial security layer
+
+Critical
+
+The demo’s local state is not an authoritative financial ledger. Real money operations require server-side authorization, validated transactions, secure key management, provider integrations, and reconciliation.
+
+2. Other weaknesses I found in the source code
+
+These are additional technical findings that should be addressed during the rebuild.
+
+Area	Finding	Recommended fix
+Currency conversion	USD and GBP use hardcoded conversion factors.	Use timestamped rates from a reliable FX provider, with a clearly labelled fallback.
+Market data	Fixed asset prices and illustrative chart data.	Add a market-data adapter with loading, stale-data, and error states.
+Data persistence	Browser state is accepted from localStorage with only basic structural checks.	Validate persisted data against schemas and make the server authoritative for user accounts.
+Transaction ledger	The code checks debit/credit balance per asset, which is a good start.	Add database transactions, immutable ledger records, idempotency, and reconciliation.
+Trade execution	Buy/sell updates the local balance rather than submitting a real exchange order.	Integrate an authorized execution provider only after backend validation and risk checks.
+Authentication	No user login or account security in the demo.	Add secure sessions, MFA, recovery, and server-side authorization.
+Card functionality	Freeze and apply actions only change local preview state.	Connect an authorized card issuer for actual issuance and card controls.
+Automated testing	The repository has build and type-check commands, but the source review alone does not establish that all tests pass.	Run build, type checks, integration tests, and browser-based end-to-end tests.
+
+Sources to inspect directly:
+
+* Demo state and ledger calculations⁠￼
+* Trade flow⁠￼
+* Market page⁠￼
+* API server entry point⁠￼
+
+One important distinction: the repository already contains an Express API-server package, PostgreSQL/Drizzle workspace dependencies, and a React frontend. This is useful groundwork. However, their presence does not prove that authentication, financial endpoints, or production database operations are implemented and connected.
+
+3. My recommended target architecture
+
+I would turn CKS into a polished, German-style fintech application with a light interface, a functional backend, and a clearly separated demo environment.
+
+CKS Web & Mobile-Responsive Frontend
+
+Dashboard · Markets · Buy/Sell · Wallet · Cards · Activity · Settings
+
+Secure Express API
+
+Authentication · Validation · Authorization · Rate limiting · Audit logs
+
+PostgreSQL
+
+Accounts, balances, ledger, orders, and transaction history
+
+Provider adapters
+
+Market data, exchange execution, custody, card issuance, and payments
+
+Target architecture. The provider integrations and production controls must be implemented and verified before any feature is advertised as live.
+
+My preferred stack is to retain React, TypeScript, Vite, Express 5, PostgreSQL, Drizzle ORM, and Zod where practical. There is no need to rewrite everything from scratch just to make the product look more professional.
+
+4. The complete build prompt for your AI
+
+Paste this into your Replit AI agent with the existing repository open. It instructs the agent to audit first, repair the current implementation, and build the missing systems without destroying working features.
+
+CKS CRYPTO KLEIN SHOP — MASTER ENGINEERING & PRODUCTION-READINESS PROMPT
+
+ROLE
+
+Act as a senior fintech software architect, full-stack TypeScript engineer, security engineer, UX designer, database architect, QA engineer, and DevOps engineer.
+
+Your mission is to transform the existing CKS Crypto Klein Shop repository into a polished, maintainable cryptocurrency platform with a working backend architecture and a reliable end-to-end user experience.
+
+Repository: https://github.com/eagle-eyexk/Cks
+
+Existing deployed demo: https://cks-crypto-klein-shop-demo–pellazgoshop.replit.app
+
+This is an upgrade of an existing project, not permission to discard the codebase and generate an unrelated template.
+
+Do not merely produce a plan, mockups, screenshots, or placeholder components. Inspect the source, implement changes, execute the available verification commands, and fix the errors you discover.
+
+1. NON-NEGOTIABLE EXECUTION RULES
+
+1. Inspect the complete repository structure, workspace configuration, existing routes, components, database schema, API contracts, dependencies, environment variables, and deployment configuration before editing.
+2. Preserve the existing React/Vite/TypeScript frontend and pnpm monorepo unless a specific technical reason justifies changing them.
+3. Preserve useful components, visual styling, working navigation, seeded demo functionality, and existing test identifiers wherever practical.
+4. Establish a baseline by running the current type checks and builds. Record existing failures before making changes.
+5. Implement the work in small, verifiable phases. Do not replace the entire application in one uncontrolled rewrite.
+6. Fix actual defects rather than hiding them with disabled controls, hardcoded success messages, or fake API responses.
+7. Every visible button, form, navigation item, filter, toggle, dialog, and action must work as advertised or be explicitly marked unavailable.
+8. Do not fabricate transaction IDs, real market prices, completed blockchain transfers, bank connections, issued cards, or successful provider operations.
+9. Keep demo mode available, but isolate it from real financial operations. Clearly label simulated assets, prices, transactions, and balances.
+10. Never claim a feature is production-ready simply because its UI renders.
+11. Do not ask me to choose a technology stack when the existing stack can reasonably support the requirement. Make sensible engineering decisions and document them.
+12. Do not expose, log, commit, or place secrets in frontend environment variables, source code, or client-side bundles.
+13. Before changing dependencies or database schemas, check compatibility with the existing pnpm workspace.
+14. If credentials for an external provider are unavailable, complete its adapter interface, configuration, validation, error handling, and sandbox tests. Report that live activation still requires credentials.
+
+2. PHASE ZERO — FULL REPOSITORY AUDIT
+
+Inspect all relevant files, including:
+
+* package.json, pnpm-lock.yaml, pnpm-workspace.yaml
+* replit.md, .replit, TypeScript configurations
+* artifacts/cks-demo/src/
+* artifacts/api-server/src/
+* lib/db/
+* lib/api-spec/
+* lib/api-zod/
+* lib/api-client-react/
+* Existing migrations, generated clients, environment templates, tests, and deployment scripts
+
+Produce a concise engineering inventory covering:
+
+* What already works
+* What is simulated
+* What is partially implemented
+* What is missing
+* What is broken
+* Security weaknesses
+* Database and API inconsistencies
+* Build and deployment risks
+
+Run the existing commands:
+
+pnpm install –frozen-lockfile
+pnpm run typecheck
+pnpm run build
+
+Use the supported Node.js version and the repository’s existing workspace configuration. If the frozen install fails, investigate the lockfile and package-manager mismatch instead of deleting the lockfile and silently changing dependency versions.
+
+Fix discovered failures and preserve the audit results.
+
+3. PRODUCT DESIGN — PREMIUM GERMAN FINTECH
+
+Build a restrained, premium, trustworthy German-fintech design.
+
+Visual direction:
+
+* Soft ivory and white backgrounds
+* Deep navy typography
+* Muted champagne-gold details
+* Restrained forest-green positive indicators
+* Subtle borders, shadows, and generous spacing
+* Crisp typography, disciplined alignment, and elegant data visualization
+* Professional German financial-institution aesthetic
+* Fully responsive desktop, tablet, and mobile layouts
+* Accessible keyboard navigation and clear focus states
+* Light theme as the default
+
+Avoid excessive gradients, neon colors, oversized cards, crypto-gaming aesthetics, cluttered dashboards, unnecessary animation, and generic AI-generated landing-page layouts.
+
+Retain and refine the existing CKS branding. Ensure the logo and assets load correctly in production, including when the application uses a non-root BASE_PATH.
+
+Build a consistent design system for:
+
+* Buttons and form controls
+* Navigation and responsive mobile menus
+* Tables and portfolio lists
+* Modals and confirmation dialogs
+* Loading skeletons and empty states
+* Success, warning, and error messages
+* Currency and cryptocurrency formatting
+* Reusable page headings and section layouts
+
+Do not redesign pages independently with inconsistent styles.
+
+4. APPLICATION ROUTES
+
+Audit and complete the existing routes:
+
+* / — Dashboard
+* /markets — Market overview
+* /trade — Buy and sell
+* /wallet — Wallet and transfer interface
+* /activity — Transaction history
+* /card — Card management and preview
+* /settings — Account and preferences
+
+Add only necessary routes, including:
+
+* Authentication and account recovery
+* Transaction detail
+* Security settings
+* Privacy and legal information
+* A dedicated demo-mode entry point or banner
+
+Implement route guards, clear navigation, browser refresh support, and appropriate not-found handling.
+
+Do not expose protected account information through unguarded client routes or API endpoints.
+
+5. DASHBOARD
+
+Build a professional portfolio overview with:
+
+* Total portfolio value
+* Available and reserved balances where applicable
+* Asset allocation
+* Asset-level balances and valuations
+* Verified market movement when a live data provider is connected
+* Recent activity
+* Deposit, withdrawal, buy, sell, and wallet shortcuts
+* Account security and verification status where implemented
+* Loading, empty, error, and stale-data states
+
+Use a real chart library already compatible with the project or a suitable lightweight alternative.
+
+Never label a hardcoded chart as live historical performance. Display the source and last-updated time for market data.
+
+Keep demo data unmistakably labelled and separate from authenticated account data.
+
+6. LIVE MARKET DATA
+
+Implement a provider-independent market-data service.
+
+Requirements:
+
+* Support configurable assets and trading pairs.
+* Retrieve prices and available historical data from a documented provider.
+* Normalize symbols, timestamps, prices, and percentage changes.
+* Cache responses appropriately and respect provider rate limits.
+* Validate provider responses.
+* Handle timeouts, rate limits, invalid payloads, and outages.
+* Display last-updated timestamps and stale-data warnings.
+* Never silently substitute simulated prices for unavailable live data.
+* Avoid exposing provider API keys to the browser.
+* Use reliable server-side fallback behavior and clearly label any fallback.
+
+Add unit and integration tests for the normalization and error-handling logic.
+
+If no market-data credentials or provider are available, preserve the existing illustrative market board and display an explicit DEMO badge.
+
+7. AUTHENTICATION AND ACCOUNT SECURITY
+
+Implement a secure server-side account system.
+
+Where appropriate, include:
+
+* Registration and login
+* Email verification
+* Secure password hashing using a maintained password-hashing library
+* Password recovery using expiring, single-use tokens
+* Secure session management
+* Session revocation and logout
+* Optional or required MFA according to the deployment’s security policy
+* Login throttling and abuse protection
+* Server-side authorization on every protected resource
+* Account status and verification state
+* Privacy-conscious audit events
+
+Use secure, HttpOnly, SameSite cookies when using a cookie-based session design. Apply appropriate Secure settings in HTTPS production deployments and protect state-changing requests against CSRF.
+
+Do not store plaintext passwords, session secrets, MFA secrets, or sensitive tokens in localStorage.
+
+Do not implement fake identity verification. Use an authorized identity-verification provider if onboarding or KYC is required.
+
+Ensure users can access only their own accounts, wallets, transactions, orders, and card records.
+
+8. DATABASE AND DOMAIN MODEL
+
+Use the existing PostgreSQL and Drizzle ORM architecture where possible.
+
+Review and implement appropriate schema definitions and migrations for:
+
+* Users
+* Sessions
+* User security settings
+* Wallet records
+* Asset definitions
+* Accounts and balance records
+* Ledger transactions and ledger entries
+* Deposits and withdrawals
+* Trade orders and execution records
+* Provider events and webhook receipts
+* Card records and card-provider references
+* Notifications
+* Audit events
+* Idempotency records
+
+Use foreign keys, uniqueness constraints, appropriate indexes, explicit transaction boundaries, and schema validation.
+
+Represent monetary amounts in integer minor units or an appropriate precise decimal representation. Represent cryptocurrency quantities in integer atomic units or an appropriate arbitrary-precision representation.
+
+Never use JavaScript floating-point arithmetic as the authoritative calculation method for financial transactions.
+
+Do not calculate an account balance by trusting a client-submitted amount or browser state.
+
+For financial operations:
+
+* Use database transactions.
+* Record balanced ledger entries.
+* Enforce nonnegative balances where the product rules require them.
+* Reserve funds for pending operations when appropriate.
+* Prevent double spending and concurrent balance races.
+* Use idempotency keys for retried requests.
+* Preserve an auditable transaction history.
+* Reconcile internal records with provider records.
+
+Create migrations that preserve existing data. Do not reset or drop a production database to make a schema change work.
+
+9. WALLET ARCHITECTURE
+
+First determine whether CKS will use a regulated custodial provider or a non-custodial wallet design. Do not mix the two models without a documented security architecture.
+
+Create a wallet service abstraction with:
+
+* Wallet/account creation
+* Supported asset and network configuration
+* Balance retrieval
+* Deposit-address retrieval where supported
+* Transfer preparation
+* Fee estimation
+* Transfer status tracking
+* Transaction history
+* Provider reconciliation
+* Confirmation and failure states
+
+For real transfers, validate:
+
+* Asset
+* Network
+* Destination format
+* Destination ownership or required verification
+* Amount and precision
+* Available balance
+* Network fee
+* Provider limits
+* Transaction risk controls
+
+Require server-side authorization and appropriate transaction confirmation before submission.
+
+Use provider-generated transaction identifiers and blockchain transaction hashes only when actually returned by the provider.
+
+Use signed webhooks, idempotent event processing, and independently verified transaction status.
+
+Never generate fake deposit addresses, claim an unsubmitted transfer is complete, or store private keys insecurely.
+
+Do not implement your own production key-management system or cryptographic custody mechanism merely to avoid using an established provider.
+
+Until a real wallet provider is configured, keep transfers in a sandbox with prominent demo labels.
+
+10. BUY AND SELL
+
+Separate the order interface from the execution engine.
+
+Implement:
+
+* Asset selection
+* Buy/sell direction
+* Amount input with precision validation
+* Quote retrieval
+* Fee and spread breakdown
+* Quote expiration where applicable
+* Available balance validation
+* Order review and confirmation
+* Pending, successful, rejected, cancelled, and failed states
+* Order history and transaction details
+
+Never execute an order using stale quotes or client-calculated prices as the authoritative execution price.
+
+The backend must validate all amounts, balances, limits, permissions, quotes, and provider responses.
+
+Use a documented exchange, broker, or liquidity-provider API when real execution is required.
+
+Handle partial fills, timeouts, retries, provider outages, duplicate requests, and uncertain execution status.
+
+Do not claim a trade succeeded until its status has been confirmed according to the provider’s documented behavior.
+
+In demo mode, use a separate deterministic simulator and never mix simulated fills with real orders.
+
+11. SEND, RECEIVE, AND ACTIVITY
+
+For transfers, provide a review screen showing:
+
+* Asset and network
+* Destination
+* Amount
+* Estimated fee
+* Total debit
+* Applicable warnings
+* Final confirmation
+
+Provide a transaction-detail page with status, timestamps, reference, provider identifier, and blockchain transaction hash where applicable.
+
+The activity list must support:
+
+* Pagination
+* Search
+* Filtering by asset, type, status, and date
+* Transaction detail navigation
+* Correct signed amounts and currency formatting
+* Accessible empty and error states
+
+Do not invent transaction confirmations or make browser-generated identifiers look like blockchain transaction hashes.
+
+12. DIGITAL CARD
+
+Treat the current card UI as a prototype until a real issuer is connected.
+
+Build the card management architecture around an authorized issuing provider.
+
+Where supported, implement:
+
+* Card application or eligibility flow
+* Card status
+* Freeze and unfreeze controls
+* Transaction history
+* Spending limits
+* Cardholder verification
+* Provider status synchronization
+
+Use provider APIs and webhooks to confirm state changes.
+
+Never generate usable card numbers or CVVs, store raw payment credentials, or claim that a card has been issued when only a visual preview exists.
+
+If no issuer integration is configured, retain the decorative card preview and explicitly state that it cannot be used for purchases.
+
+13. SETTINGS AND USER EXPERIENCE
+
+Implement:
+
+* Profile information
+* Security and session settings
+* Notification preferences
+* Display currency
+* Balance visibility
+* Accessible preferences
+* Data export where appropriate
+* Account deletion or closure workflows subject to applicable retention obligations
+
+Use a reputable exchange-rate provider for converted display values. Show the rate timestamp and clearly distinguish display conversion from actual account balances.
+
+Validate and migrate local demo data safely. A corrupt or outdated local state must not crash the application.
+
+Provide clear feedback for every action, with loading indicators, success messages, and actionable errors.
+
+14. BACKEND API DESIGN
+
+Review the existing Express API and generated API tooling before adding endpoints.
+
+Organize routes by domain and use the existing Zod/API-spec conventions consistently.
+
+Create documented endpoints for the implemented features, including appropriate versions of:
+
+* Authentication and sessions
+* User profile
+* Assets and market quotes
+* Wallet accounts and balances
+* Transfer preparation and submission
+* Orders and trade quotes
+* Transaction history
+* Card-provider operations
+* Settings and notifications
+* Health and readiness checks
+
+Use consistent response formats, pagination, request validation, error codes, and authorization middleware.
+
+Add:
+
+* Request size limits
+* Rate limiting
+* CORS allowlists
+* Security headers
+* Safe logging
+* Request correlation IDs
+* Timeout handling
+* Provider error normalization
+
+Do not return stack traces, internal provider credentials, or sensitive account information in client-facing errors.
+
+Review generated clients and API schemas after contract changes. Do not leave frontend types inconsistent with backend responses.
+
+15. SECURITY REVIEW
+
+Perform a threat-model review covering:
+
+* Authentication bypass
+* Broken object-level authorization
+* SQL injection
+* Cross-site scripting
+* CSRF
+* Session theft
+* Replay attacks
+* Duplicate financial requests
+* Race conditions and double spending
+* Webhook forgery and replay
+* Secrets leakage
+* Dependency vulnerabilities
+* Excessive API permissions
+* Logging of personal or financial data
+
+Use maintained libraries and documented cryptographic protocols.
+
+Apply least privilege to database and provider credentials.
+
+Do not invent security certifications, regulatory approvals, insurance coverage, or audit results.
+
+Add automated tests for authorization boundaries and financial invariants.
+
+16. TESTING AND QUALITY CONTROL
+
+Use the existing testing framework if present. Add suitable tools only when needed.
+
+Required checks:
+
+A. Static checks
+
+* pnpm run typecheck
+* pnpm run build
+* Verify generated API contracts
+* Check for unresolved imports and missing assets
+
+B. Unit tests
+
+* Monetary arithmetic
+* Quantity precision
+* Currency conversion
+* Input validation
+* Fee calculations
+* Ledger balancing
+* Authorization rules
+* Provider response parsing
+
+C. Integration tests
+
+* Authentication and session lifecycle
+* Database persistence
+* Order lifecycle
+* Idempotent requests
+* Transfer status updates
+* Webhook verification
+* Provider failures
+* Concurrent balance updates
+
+D. Browser end-to-end tests
+
+* Open every route
+* Navigate using the sidebar and mobile navigation
+* Test forms, dialogs, filters, and settings
+* Test login and logout
+* Verify account isolation
+* Execute complete demo buy/sell flows
+* Exercise validation and error states
+* Refresh pages and verify expected persistence
+* Test narrow mobile viewports
+* Confirm that every primary action works
+
+Use test databases and sandbox credentials. Never use real customer funds in automated tests.
+
+After each phase, rerun the relevant tests and fix failures before continuing.
+
+17. DEPLOYMENT AND OPERATIONS
+
+Make the project run reliably in the existing Replit environment.
+
+Check:
+
+* PORT configuration
+* BASE_PATH configuration
+* Frontend build and asset paths
+* API startup and readiness
+* Database connectivity
+* Migrations
+* Environment variable validation
+* Correct development and production commands
+* Process shutdown behavior
+* Logs and health checks
+
+Add a safe .env.example with variable names and placeholder values only.
+
+Provide clear setup instructions for the frontend, API, PostgreSQL database, and optional providers.
+
+Do not print secret values in diagnostic logs.
+
+Document backup, migration, and recovery procedures before enabling production financial operations.
+
+18. EXECUTION ORDER
+
+Complete the project in this sequence:
+
+Phase 1: Repository audit and reproducible baseline.
+
+Phase 2: Fix existing build, type, runtime, arithmetic, routing, and UI defects.
+
+Phase 3: Refine the existing responsive fintech interface.
+
+Phase 4: Implement and test database schema, migrations, and core backend services.
+
+Phase 5: Implement authentication, authorization, and secure account persistence.
+
+Phase 6: Connect frontend account and activity views to real backend endpoints.
+
+Phase 7: Implement provider-independent market-data and financial-service adapters.
+
+Phase 8: Implement wallet, trading, and card integrations where credentials and authorization are available.
+
+Phase 9: Complete automated testing, security review, accessibility review, and performance checks.
+
+Phase 10: Deploy, smoke-test, document, and provide a final status report.
+
+Keep the application runnable throughout development.
+
+If a phase depends on unavailable credentials or external approval, complete everything that can be safely verified and clearly identify the remaining dependency.
+
+19. DEFINITION OF DONE
+
+The project is not complete until:
+
+* The existing workspace installs reproducibly.
+* Type checking and production builds pass.
+* All advertised routes render without runtime errors.
+* Responsive layouts work on desktop and mobile.
+* Core UI actions have meaningful, verified behavior.
+* Demo data is unmistakably separated from real financial data.
+* Server-side account authorization is enforced wherever implemented.
+* Database operations are validated and tested.
+* Monetary calculations use appropriate precision.
+* Financial operations are idempotent and protected against concurrent balance errors.
+* Provider failures and pending transactions are handled honestly.
+* Secrets are not exposed to the client.
+* Critical user flows pass automated tests.
+* Deployment instructions are reproducible.
+* Every incomplete external integration is explicitly documented.
+
+20. FINAL REPORT
+
+At completion, provide:
+
+1. Summary of changes actually implemented.
+2. Files created, modified, and removed.
+3. Build and type-check results.
+4. Unit, integration, and end-to-end test results.
+5. Verified working routes and workflows.
+6. Security issues fixed and remaining risks.
+7. Database migration status.
+8. External integrations that are live, sandbox-only, or unconfigured.
+9. Environment variables that must be configured, without revealing secret values.
+10. Deployment status and any remaining blockers.
+
+Use evidence from executed tests and actual application behavior. Never report a test as passing if it was not run.
+
+BEGIN NOW: audit the existing repository, establish the baseline, and start implementing the highest-priority verified fixes. Do not stop after writing the plan.
+
+5. How I would prioritize the actual implementation
+
+Don’t ask the AI to build every production financial integration in one pass and assume the result is secure. Use this order:
+
+1
+
+Stabilize and polish the current demo
+
+Fix build errors, incorrect calculations, route problems, broken assets, mobile layouts, and any nonfunctional buttons. Preserve a reliable demonstration environment.
+
+First priority
+
+2
+
+Build the real backend
+
+Connect PostgreSQL, user authentication, server-side balances, transaction records, API validation, and account isolation. This is the foundation for real users.
+
+3
+
+Integrate real market data and sandbox financial providers
+
+Verify live prices, fee calculations, order states, wallet-provider behavior, and card-provider capabilities before allowing any real financial operations.
+
+4
+
+Security, compliance, and production launch
+
+Perform independent security testing and address applicable licensing, AML/KYC, data-protection, payment-provider, and operational requirements for the jurisdictions served.
+
+My final assessment
+
+The strongest part of CKS is that it already has a recognizable product structure and a substantial frontend foundation. The biggest weakness is the gap between what a customer might expect from a cryptocurrency platform and what the current application actually executes.
+
+I would not discard the existing project. I would first make the current demo reliable, then connect the backend, and only then introduce genuine financial functionality.
+
+The most important instruction for your AI is this: build working, testable systems instead of merely making the interface look finished. A beautiful trading screen is not a trading engine, and a wallet preview is not a wallet. CKS needs both a professional interface and a properly engineered financial backend.
