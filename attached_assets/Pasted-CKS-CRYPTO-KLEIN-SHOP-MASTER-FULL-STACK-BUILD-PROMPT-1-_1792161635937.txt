@@ -1,0 +1,395 @@
+CKS CRYPTO KLEIN SHOP — MASTER FULL-STACK BUILD PROMPT
+
+1. Your role and objective
+
+Act as a senior fintech product designer, full-stack engineer, blockchain engineer, database architect, and application security specialist.
+
+Build CKS Crypto Klein Shop, a premium cryptocurrency platform with a trustworthy German fintech identity. The platform must support real-time cryptocurrency prices, user accounts, individual wallets, a native CKS digital currency, internal transfers between registered users, and a secure financial transaction ledger.
+
+Do not build only a landing-page mockup. Inspect the existing repository, preserve working components, identify incomplete features, and implement the complete application in production-oriented phases.
+
+Repository: https://github.com/eagle-eyexk/Cks
+
+Existing demo: https://cks-crypto-klein-shop-demo–pellazgoshop.replit.app
+
+Use the supplied CKS design reference as the visual direction.
+
+2. Design system
+
+Use a premium German financial-services aesthetic.
+
+* Background: warm ivory and soft white.
+* Primary color: deep navy blue.
+* Accent: elegant champagne gold.
+* Text: dark navy and neutral gray.
+* Cards: white surfaces, subtle borders, soft shadows, consistent rounded corners.
+* Typography: professional, refined, highly legible.
+* Responsive layouts for desktop, tablet, and mobile.
+* Accessible controls, keyboard navigation, clear validation, and loading states.
+* Light theme as the default. Do not redesign the platform into a generic dark crypto dashboard.
+
+Use authentic cryptocurrency logos from reliable, licensed or official asset sources. Never substitute random emoji or generic coins for real cryptocurrency logos.
+
+Create a consistent CKS brand mark and a custom CKS coin emblem with a recognizable, original design. Do not copy the Bitcoin logo.
+
+3. Build three separate experiences
+
+A. Public homepage
+
+Create a dedicated public landing page with:
+
+1. CKS navigation, logo, Markets, Trade, Wallet information, Card, About, Login, and Get Started.
+2. Hero headline: “Your Gateway to the Crypto Economy.”
+3. Supporting copy focused on secure, simple digital-asset management.
+4. Primary CTA: Get Started.
+5. Secondary CTA: Explore Markets.
+6. Premium phone and payment-card mockup.
+7. Real cryptocurrency market table with authentic logos, current prices in EUR, 24-hour percentage changes, and market capitalization.
+8. Platform benefits: security, transparent fees, multi-asset support, and accessible design.
+9. A CKS coin introduction explaining its actual capabilities and pricing model.
+10. Trust and security section, FAQs, contact, legal disclosures, privacy policy, terms, and footer.
+
+Do not claim regulatory approval, insurance, bank partnerships, or certifications unless verified.
+
+B. Authenticated user dashboard
+
+Create a separate dashboard available only after authentication.
+
+Include:
+
+* Personalized welcome message.
+* Total portfolio value in EUR.
+* Available balances and pending transactions.
+* Portfolio performance chart.
+* Asset allocation visualization.
+* Quick actions: Deposit, Withdraw, Buy, Sell, Send, and Receive.
+* Real cryptocurrency prices and market movement.
+* CKS balance and transaction activity.
+* Recent deposits, withdrawals, trades, and transfers.
+* Account verification and security status.
+* Notifications and transaction details.
+* Search, date filters, pagination, and downloadable transaction statements.
+
+Display clear distinctions between available, pending, locked, promotional, and externally withdrawable balances.
+
+C. Dedicated wallet page
+
+The wallet must be a separate route, not merely a dashboard card.
+
+Include:
+
+* All supported asset balances.
+* A dedicated CKS wallet section.
+* Send and receive workflows.
+* Recipient search by verified username or email.
+* QR codes for supported receive addresses.
+* Transaction history with filters and statuses.
+* Transaction details and unique references.
+* Network and fee information for blockchain transfers.
+* Deposit and withdrawal screens with address validation and confirmation steps.
+* Copy-address controls and appropriate warnings.
+* Pending, completed, failed, and reversed states where applicable.
+
+Internal CKS transfers between platform users must be distinguishable from external blockchain transactions.
+
+4. Live cryptocurrency market data
+
+Integrate a reputable cryptocurrency market-data API, such as CoinGecko or another suitable provider, subject to available access and licensing.
+
+Requirements:
+
+* Current prices displayed in EUR.
+* Authentic token and coin logos.
+* 24-hour percentage change.
+* Market capitalization and trading volume where available.
+* Search and sorting.
+* Asset detail pages with historical price charts.
+* Loading, unavailable, stale-data, and API-error states.
+* Backend caching, rate-limit handling, retries, and monitoring.
+* Scheduled refreshes and server-side validation of upstream data.
+
+Never hardcode market prices or use invented figures while labeling them live. Do not use a frontend timer to fabricate price movements.
+
+Show the provider and timestamp of the latest update. If data becomes stale, clearly disclose that.
+
+Market-data APIs provide information; they do not execute trades or guarantee prices.
+
+5. CKS digital currency
+
+Create the platform’s own digital currency with the symbol CKS.
+
+Initial product rules
+
+* Reference price: 1 CKS = €1.
+* Eligible new registrations receive a one-time bonus of 50 CKS.
+* Initial bonus display: “50 CKS bonus — reference value €50.”
+* Users can send CKS to other registered CKS users.
+* Users can receive CKS from other registered CKS users.
+* Users can view their available balance and complete CKS transaction history.
+* Every CKS movement must be auditable.
+
+Critical economic distinction
+
+Implement the €1 figure as a clearly labeled platform reference valuation unless and until a legally and financially supported redemption mechanism exists.
+
+Do not claim that CKS is exchange-traded, cash-equivalent, guaranteed to maintain a market price, or redeemable for €1 without the corresponding infrastructure and legal arrangements.
+
+Create explicit configuration and documentation for:
+
+* Reference price.
+* Total issued supply.
+* Circulating supply, if applicable.
+* Bonus issuance.
+* Transfer rules.
+* Redemption status.
+* Fees, if any.
+* Whether CKS is an internal ledger asset or an on-chain token.
+
+Do not mix CKS with real EUR bank balances or other cryptocurrency balances.
+
+Choose and document the CKS implementation model
+
+Default MVP: implement CKS as a platform-issued ledger asset, recorded in the database and transferable between authenticated users. This enables working internal transfers without pretending that an external blockchain transaction occurred.
+
+Optional blockchain phase: if an actual on-chain CKS token is required, implement a separately audited smart contract on a selected network. Document the network, contract address, token decimals, supply and minting rules, wallet custody model, and transaction fees. Do not invent a deployed contract address or claim deployment without proof.
+
+If the platform’s 50 CKS bonus is intended to be an actual on-chain token, implement an explicitly authorized and funded issuance process. Never silently create real on-chain tokens through a database update.
+
+6. Registration and 50 CKS bonus
+
+Implement secure registration and a one-time welcome bonus.
+
+Flow:
+
+1. User registers with email and password.
+2. Email verification is completed.
+3. The backend checks eligibility and account status.
+4. The database creates the user and wallet records.
+5. The backend grants exactly 50 CKS through an atomic ledger transaction.
+6. The user sees the credited amount and a welcome notification.
+7. The transaction is recorded in the account’s history.
+
+Security rules:
+
+* One bonus per eligible account.
+* Enforce uniqueness and idempotency at the database level.
+* Prevent duplicate awards during retries or simultaneous requests.
+* Apply appropriate bot, rate-limit, and duplicate-account protections.
+* Define eligibility and abuse-review rules.
+* Never award bonuses from client-side code.
+* Use a configurable feature flag to pause bonus issuance.
+* Keep an immutable audit record of every bonus.
+* Do not delete ledger history to correct errors; use explicit reversal entries.
+
+Make the bonus terms visible before registration. Explain any transfer, withdrawal, expiration, verification, or redemption restrictions accurately. Do not invent restrictions after users have received the bonus.
+
+7. Internal CKS transfers
+
+Implement functional transfers between registered platform users.
+
+Example:
+
+* User A owns 50 available CKS.
+* User A sends 10 CKS to User B.
+* User A has 40 CKS available.
+* User B receives 10 CKS.
+* Both users see the same transaction reference and matching transfer records.
+
+Requirements:
+
+* Recipient lookup using verified platform identities.
+* Amount validation and decimal precision.
+* Minimum and maximum limits configured server-side.
+* Optional transfer notes.
+* Confirmation screen showing recipient, amount, and applicable fees.
+* PIN or re-authentication for sensitive transactions where appropriate.
+* Atomic debit and credit in one database transaction.
+* Row locking or equivalent concurrency protection.
+* Idempotency keys for transfer requests.
+* Unique transaction identifiers.
+* Prevention of negative balances and double spending.
+* Clear pending and completed states.
+* Risk-based limits and suspicious-activity monitoring.
+* Reversal entries and administrative review workflows.
+
+Never trust a balance or transaction amount submitted by the browser. All balance calculations and transfer authorization must occur on the server.
+
+For internal transfers, no blockchain network fee should be displayed unless a real fee applies. Do not generate fake blockchain transaction hashes.
+
+8. Real cryptocurrency trading and external wallets
+
+Build the architecture for real trading and blockchain transactions, but do not simulate execution as if it were real.
+
+For each external integration:
+
+* Select and configure a suitable provider.
+* Secure credentials in environment variables or a secrets manager.
+* Implement server-side validation and error handling.
+* Record provider references and execution status.
+* Support idempotency, reconciliation, and audit logs.
+* Display network fees and confirmation requirements.
+* Handle pending, failed, cancelled, and completed states honestly.
+
+Do not label a demo trade as executed on an exchange. Do not label an internal wallet entry as a blockchain deposit.
+
+If exchange, payment, custody, or blockchain providers have not been configured, display an explicit sandbox or unavailable state and provide a clear setup checklist.
+
+Never collect or store users’ raw wallet seed phrases or private keys in the ordinary application database.
+
+9. Authentication and user security
+
+Implement:
+
+* Secure password hashing using a modern algorithm such as Argon2id.
+* Email verification.
+* Secure sessions or properly configured token-based authentication.
+* Password reset with short-lived, single-use tokens.
+* Login rate limits and brute-force protection.
+* Optional multi-factor authentication.
+* Secure cookie settings when cookie-based sessions are used.
+* Server-side authorization for every protected endpoint.
+* Input validation and output encoding.
+* CSRF protection where applicable.
+* Protection against SQL injection, XSS, IDOR, and replay attacks.
+* Security event logs and session revocation.
+* Privacy-aware logging that never exposes secrets.
+
+Use least-privilege access for administrators and service credentials.
+
+10. Backend and database
+
+Inspect the existing repository and preserve its useful architecture. Prefer the existing React, TypeScript, Vite, Express, PostgreSQL, and Drizzle stack if compatible with the codebase.
+
+Build real API endpoints and persistent database storage.
+
+Design normalized tables for:
+
+* users
+* user_profiles
+* verification_records
+* sessions
+* wallets
+* assets
+* asset_balances or ledger accounts
+* ledger_transactions
+* ledger_entries
+* internal_transfers
+* bonus_grants
+* market_data_snapshots
+* deposits
+* withdrawals
+* trades and orders, where supported
+* notifications
+* audit_logs
+* admin_actions
+* provider_webhooks and reconciliation records
+
+Use database constraints, foreign keys, appropriate decimal or integer-unit representations, migrations, indexes, and transactions.
+
+For CKS, choose a consistent smallest-unit representation and decimal precision. Ensure displayed values and stored values are converted safely without floating-point money errors.
+
+Implement documented API endpoints for registration, login, profile, dashboard data, markets, balances, transfer creation, transfer history, and transaction details.
+
+Validate permissions and ownership on the backend for every sensitive operation.
+
+11. Admin panel
+
+Create a separate protected admin interface with role-based permissions.
+
+Include:
+
+* User and account management.
+* Bonus issuance configuration and eligibility rules.
+* CKS supply and ledger reporting.
+* Transaction search and audit trails.
+* Suspicious-activity review.
+* Provider health and webhook monitoring.
+* Market-data status.
+* Feature flags for deposits, withdrawals, trading, and transfers.
+* Reconciliation and incident management.
+
+Administrators must not be able to silently alter a user’s balance. Corrections require an authorized, reason-coded ledger adjustment with a complete audit trail.
+
+12. UX and operational quality
+
+Every visible button must work or clearly state why the feature is unavailable.
+
+Implement:
+
+* Responsive navigation.
+* Empty states.
+* Loading skeletons.
+* Error messages with recovery guidance.
+* Form validation.
+* Success confirmations only after the server confirms success.
+* Pagination and search.
+* Accessible labels and keyboard support.
+* Consistent EUR formatting and localized dates.
+* English and German-ready localization architecture.
+* Privacy, terms, risk disclosures, and contact pages.
+
+Use demo data only when the environment is explicitly marked as demo. Label all demo balances, prices, users, and transactions.
+
+13. Testing
+
+Write automated tests covering:
+
+* Registration and email verification.
+* Exactly-once bonus issuance.
+* Duplicate bonus prevention.
+* User-to-user transfers.
+* Insufficient balances.
+* Concurrent transfers and double-spend prevention.
+* Invalid amounts and recipient identities.
+* Unauthorized account access.
+* Ledger consistency.
+* Transaction reversals.
+* Market API failures and stale prices.
+* Authentication and session security.
+* Administrative permissions.
+* Webhook replay and duplicate events.
+* Database migration and recovery paths.
+
+Test the critical financial workflows against a real test database, not only mocked frontend state.
+
+14. Deployment and deliverables
+
+Deliver:
+
+1. Working public homepage.
+2. Separate authenticated dashboard.
+3. Separate wallet page.
+4. Live cryptocurrency market-data integration.
+5. Custom CKS branding and coin design.
+6. Secure registration and one-time 50 CKS bonus.
+7. Functional internal CKS transfers.
+8. Persistent database and auditable ledger.
+9. Protected admin panel.
+10. Automated tests and setup documentation.
+11. .env.example containing placeholders, never real secrets.
+12. Database migrations and seed scripts for demo mode.
+13. API documentation.
+14. Deployment instructions and health checks.
+15. A report listing complete, incomplete, sandbox-only, and provider-dependent features.
+
+15. Implementation order
+
+Build in the following phases, preserving a working application at every stage:
+
+Phase 1: audit the repository, map existing pages and APIs, and implement the design system and three separate experiences.
+
+Phase 2: implement authentication, PostgreSQL persistence, and database migrations.
+
+Phase 3: implement the CKS ledger, registration bonus, and secure internal transfers.
+
+Phase 4: integrate live market data and authentic cryptocurrency logos.
+
+Phase 5: implement provider-dependent trading, external deposits and withdrawals, and optional on-chain CKS deployment.
+
+Phase 6: implement administration, monitoring, security hardening, automated tests, and deployment.
+
+At the end of each phase, run the tests, fix regressions, and report exactly what works.
+
+Final instruction
+
+Prioritize financial correctness and security over visual shortcuts. Never fake live prices, completed transfers, deposits, withdrawals, or blockchain confirmations. Do not claim the system is production-ready until its critical workflows, provider integrations, security controls, legal requirements, and reconciliation procedures have been verified.

@@ -2,7 +2,9 @@ import { type ReactNode, useEffect, useRef } from 'react';
 import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query';
 import { ClerkProvider, SignIn, SignUp, useAuth, useClerk } from '@clerk/react';
 import { publishableKeyFromHost } from '@clerk/react/internal';
+import { deDE, enUS } from '@clerk/localizations';
 import { shadcn } from '@clerk/themes';
+import { LanguageSwitcher } from '@/components/language-switcher';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Shell } from '@/components/shell';
 import { Toaster } from '@/components/ui/toaster';
@@ -17,6 +19,7 @@ import SettingsPage from '@/pages/settings';
 import Trade from '@/pages/trade';
 import Wallet from '@/pages/wallet';
 import { DemoProvider } from '@/lib/demo-store';
+import { LanguageProvider, useLanguage } from '@/lib/i18n';
 import {
   Redirect,
   Route,
@@ -97,38 +100,40 @@ const clerkAppearance = {
 
 function HomeRoute() {
   const { isLoaded, isSignedIn } = useAuth();
+  const { t } = useLanguage();
 
   if (!isLoaded) {
-    return <div className="cks-loading" role="status">Loading CKS…</div>;
+    return <div className="cks-loading" role="status">{t('Loading CKS…')}</div>;
   }
 
   return isSignedIn ? <Redirect to="/dashboard" /> : <Home />;
 }
 
 function AuthFrame({ children }: { children: ReactNode }) {
+  const { t } = useLanguage();
   return (
     <main className="cks-auth-page">
       <div className="cks-auth-layout">
-        <a
-          className="cks-auth-brand"
-          href={`${basePath || ''}/`}
-          aria-label="Return to CKS home"
-        >
-          <img src={`${basePath}/logo.svg`} alt="" />
-          <span><strong>CKS</strong> Crypto Klein Shop</span>
-        </a>
+        <div className="cks-auth-top">
+          <a
+            className="cks-auth-brand"
+            href={`${basePath || ''}/`}
+            aria-label={t('CKS Crypto Klein Shop home')}
+          >
+            <img src={`${basePath}/logo.svg`} alt="" />
+            <span><strong>CKS</strong> Crypto Klein Shop</span>
+          </a>
+          <LanguageSwitcher className="cks-auth-language" />
+        </div>
         <div className="cks-auth-copy">
           <span className="cks-auth-kicker">CKS Crypto Klein Shop</span>
-          <h1>Explore the demo at your own pace.</h1>
-          <p>Create or access a CKS demo profile. Signing in does not open a real crypto, wallet, or investment account.</p>
+          <h1>{t('Explore the demo at your own pace.')}</h1>
+          <p>{t('Create or access a CKS demo profile. Signing in does not open a real crypto, wallet, or investment account.')}</p>
         </div>
         {children}
-        <p className="cks-auth-disclaimer">
-          CKS is a demonstration environment. Balances and actions are illustrative;
-          no real funds or assets are handled.
-        </p>
+        <p className="cks-auth-disclaimer">{t('CKS is a demonstration environment. Balances and actions are illustrative; no real funds or assets are handled.')}</p>
         <a className="cks-auth-home-link" href={`${basePath || ''}/`}>
-          Back to the CKS homepage
+          {t('Back to the CKS homepage')}
         </a>
       </div>
     </main>
@@ -163,9 +168,10 @@ function SignUpPage() {
 
 function DemoRoutes() {
   const { isLoaded, userId } = useAuth();
+  const { t } = useLanguage();
 
   if (!isLoaded) {
-    return <div className="cks-loading" role="status">Loading the CKS demo…</div>;
+    return <div className="cks-loading" role="status">{t('Loading the CKS demo…')}</div>;
   }
 
   const storageScope = userId ? `user-${userId}` : 'guest';
@@ -219,6 +225,7 @@ function ClerkQueryClientCacheInvalidator() {
 
 function ClerkProviderWithRoutes() {
   const [, setLocation] = useLocation();
+  const { language } = useLanguage();
 
   return (
     <ClerkProvider
@@ -227,20 +234,7 @@ function ClerkProviderWithRoutes() {
       appearance={clerkAppearance}
       signInUrl={`${basePath}/sign-in`}
       signUpUrl={`${basePath}/sign-up`}
-      localization={{
-        signIn: {
-          start: {
-            title: 'Welcome back',
-            subtitle: 'Sign in to access your CKS demo profile',
-          },
-        },
-        signUp: {
-          start: {
-            title: 'Create your account',
-            subtitle: 'Get started with the CKS demo',
-          },
-        },
-      }}
+      localization={language === 'de' ? deDE : enUS}
       routerPush={(to) => setLocation(stripBase(to))}
       routerReplace={(to) => setLocation(stripBase(to), { replace: true })}
     >
@@ -263,7 +257,9 @@ function ClerkProviderWithRoutes() {
 function App() {
   return (
     <WouterRouter base={basePath}>
-      <ClerkProviderWithRoutes />
+      <LanguageProvider>
+        <ClerkProviderWithRoutes />
+      </LanguageProvider>
     </WouterRouter>
   );
 }
