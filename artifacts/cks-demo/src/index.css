@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+@layer theme, base, clerk, components, utilities;
 @import 'tailwindcss';
+@import '@clerk/themes/shadcn.css';
 @import 'tw-animate-css';
 
 :root {
@@ -223,3 +225,23 @@ h1 { font:700 clamp(26px,3vw,34px)/1.18 var(--app-font-serif);letter-spacing:-1.
  .market-table th,.market-table td{padding:12px 8px}.search-wrap{max-width:none}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+.cks-loading { min-height:100dvh; display:grid; place-items:center; color:#526477; background:#f8f7f3; font:600 14px 'DM Sans',sans-serif; }
+.cks-auth-page { min-height:100dvh; padding:30px 20px 42px; display:grid; place-items:center; background:radial-gradient(ellipse at 12% 10%,rgba(101,142,185,.13),transparent 32%),radial-gradient(ellipse at 88% 88%,rgba(201,154,78,.12),transparent 30%),#f8f7f3; color:#233b56; }
+.cks-auth-layout { width:min(100%,600px); display:flex; align-items:center; flex-direction:column; }
+.cks-auth-brand { display:flex; align-items:center; gap:10px; align-self:flex-start; color:#314b64; font-size:12px; letter-spacing:.5px; }
+.cks-auth-brand img { width:39px; height:39px; border-radius:11px; }
+.cks-auth-brand strong { color:#203b5c; font-size:15px; font-weight:800; }
+.cks-auth-copy { max-width:440px; margin:34px 0 22px; text-align:center; }
+.cks-auth-kicker { color:#987c4a; font-size:9px; font-weight:700; letter-spacing:1.6px; text-transform:uppercase; }
+.cks-auth-copy h1 { margin:9px 0; color:#233b56; font:700 clamp(26px,5vw,34px)/1.18 'Manrope',sans-serif; letter-spacing:-1px; }
+.cks-auth-copy p { margin:0; color:#657583; font-size:13px; line-height:1.65; }
+.cks-auth-disclaimer { max-width:440px; margin:20px 0 0; color:#77838b; font-size:10px; line-height:1.6; text-align:center; }
+.cks-auth-home-link { margin-top:16px; color:#344f68; font-size:11px; font-weight:700; text-decoration:underline!important; text-underline-offset:3px; }
+.shell-user-label { min-width:0; max-width:190px; }
+.shell-user-label strong { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.shell-signout { border:1px solid #ddd8ce; border-radius:8px; background:#fffefa; color:#405469; padding:7px 10px; font-size:10px; font-weight:700; }
+.shell-signout:hover { background:#f2efe7; }
+.shell-auth-links { display:flex; align-items:center; gap:12px; padding-left:13px; border-left:1px solid #e4dfd4; font-size:11px; font-weight:700; }
+.shell-auth-links a:first-child { color:#465c70; }
+.shell-auth-links a:last-child { border-radius:8px; background:#243e5d; color:#fff; padding:9px 12px; }
+@media(max-width:700px){.shell-user-label{max-width:100px}.shell-signout{padding:6px 8px;font-size:9px}.shell-auth-links{gap:8px;padding-left:8px;font-size:10px}.shell-auth-links a:last-child{padding:8px 9px}}

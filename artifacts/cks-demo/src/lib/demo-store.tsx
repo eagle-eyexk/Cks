@@ -10,6 +10,9 @@ export type { DemoState, DemoTransaction, LedgerEntry } from './demo-persistence
 
 export type Asset = { id: string; symbol: string; name: string; demoPriceEurMinor: number; quantityAtomic: number; decimals: number; changePercentIllustrative: number; color: string; icon: string };
 const KEY = 'cks-demo-state-v1';
+function storageKey(storageScope: string) {
+  return storageScope === 'guest' ? KEY : `${KEY}:${encodeURIComponent(storageScope)}`;
+}
 const now = Date.now();
 export const assetCatalog: Asset[] = [
   { id:'bitcoin',symbol:'BTC',name:'Bitcoin',demoPriceEurMinor:6254000,quantityAtomic:3820000,decimals:8,changePercentIllustrative:2.38,color:'#d9a24a',icon:'₿' },
@@ -32,13 +35,13 @@ type InitialDemoState = {
   storageAvailable: boolean;
 };
 
-function readInitialDemoState(): InitialDemoState {
+function readInitialDemoState(storageScope = 'guest'): InitialDemoState {
   if (typeof window === 'undefined') {
     return { state: seedState, recovered: false, storageAvailable: false };
   }
 
   try {
-    const parsed = parsePersistedDemoState(window.localStorage.getItem(KEY));
+    const parsed = parsePersistedDemoState(window.localStorage.getItem(storageKey(storageScope)));
     return {
       state: parsed.state ?? seedState,
       recovered: parsed.invalid,
@@ -49,14 +52,15 @@ function readInitialDemoState(): InitialDemoState {
   }
 }
 
-export function readDemoState(): DemoState {
-  return readInitialDemoState().state;
+export function readDemoState(storageScope = 'guest'): DemoState {
+  return readInitialDemoState(storageScope).state;
 }
 
 type Store = { state: DemoState; update: (fn:(s:DemoState)=>DemoState)=>void; reset:()=>void; toast:(message:string)=>void; notice:string; dismiss:()=>void; storageAvailable:boolean };
 const DemoContext=createContext<Store | null>(null);
-export function DemoProvider({children}:{children:ReactNode}) {
-  const [initial] = useState(readInitialDemoState);
+export function DemoProvider({children,storageScope='guest'}:{children:ReactNode;storageScope?:string}) {
+  const key = storageKey(storageScope);
+  const [initial] = useState(() => readInitialDemoState(storageScope));
   const [state,setState]=useState<DemoState>(initial.state);
   const [notice,setNotice]=useState(initial.recovered
     ? 'Saved demo data was invalid; the starter scenario has been restored.'
@@ -64,12 +68,12 @@ export function DemoProvider({children}:{children:ReactNode}) {
   const [storageAvailable,setStorageAvailable]=useState(initial.storageAvailable);
   useEffect(()=>{
     try {
-      window.localStorage.setItem(KEY,serializeDemoState(state));
+      window.localStorage.setItem(key,serializeDemoState(state));
       setStorageAvailable(true);
     } catch {
       setStorageAvailable(false);
     }
-  },[state]);
+  },[key,state]);
   useEffect(()=>{if(!notice)return;const timer=window.setTimeout(()=>setNotice(''),3200);return()=>window.clearTimeout(timer)},[notice]);
   const value=useMemo(()=>({state,update:(fn:(s:DemoState)=>DemoState)=>setState(s=>fn(s)),reset:()=>{setState({...seedState,transactions:seedState.transactions.map(t=>({...t}))});setNotice('Demo scenario restored to its original state.');},toast:(m:string)=>setNotice(m),notice,dismiss:()=>setNotice(''),storageAvailable}),[state,notice,storageAvailable]);
   return <DemoContext.Provider value={value}>{children}</DemoContext.Provider>;
