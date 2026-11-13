@@ -6,6 +6,7 @@ import {
   type DemoState,
   type DemoTransaction,
 } from './demo-persistence';
+import { getLocale } from './i18n';
 export type { DemoState, DemoTransaction, LedgerEntry } from './demo-persistence';
 
 export type Asset = { id: string; symbol: string; name: string; demoPriceEurMinor: number; quantityAtomic: number; decimals: number; changePercentIllustrative: number; color: string; icon: string };
@@ -80,9 +81,9 @@ export function DemoProvider({children,storageScope='guest'}:{children:ReactNode
 }
 export function useDemo(){const value=useContext(DemoContext);if(!value)throw new Error('DemoProvider is missing');return value;}
 export function amountFor(symbol:string,state:DemoState){const a=assetCatalog.find(x=>x.symbol===symbol);if(!a)return 0;return Number(BigInt(a.demoPriceEurMinor)*BigInt(state.balances[symbol])/(10n**BigInt(a.decimals)));}
-export function formatMoney(minor:number,currency='EUR'){const symbol=currency==='EUR'?'€':currency;return `${symbol}${(minor/100).toLocaleString('en-IE',{minimumFractionDigits:2,maximumFractionDigits:2})}`;}
-export function formatDisplayMoney(minor:number,currency='EUR'){const rates:Record<string,number>={EUR:1,GBP:.86,USD:1.08};const symbols:Record<string,string>={EUR:'€',GBP:'£',USD:'$'};const value=Math.round(minor*(rates[currency]||1));return `${symbols[currency]||'€'}${(value/100).toLocaleString('en-IE',{minimumFractionDigits:2,maximumFractionDigits:2})}`;}
-export function formatQuantity(atomic:number,asset:Asset){return (atomic/(10**asset.decimals)).toLocaleString('en-IE',{maximumFractionDigits:asset.decimals===8?6:2});}
+export function formatMoney(minor:number,currency='EUR'){return new Intl.NumberFormat(getLocale(),{style:'currency',currency,minimumFractionDigits:2,maximumFractionDigits:2}).format(minor/100);}
+export function formatDisplayMoney(minor:number,currency='EUR'){const rates:Record<string,number>={EUR:1,GBP:.86,USD:1.08};const value=Math.round(minor*(rates[currency]||1));return formatMoney(value,currency);}
+export function formatQuantity(atomic:number,asset:Asset){return (atomic/(10**asset.decimals)).toLocaleString(getLocale(),{maximumFractionDigits:asset.decimals===8?6:2});}
 export function parseMajorToMinor(value:string){const normalized=value.trim();if(!/^\d+(?:\.\d{0,2})?$/.test(normalized))return Number.NaN;const [whole,fraction='']=normalized.split('.');const minor=BigInt(whole)*100n+BigInt((fraction+'00').slice(0,2));return minor<=BigInt(Number.MAX_SAFE_INTEGER)?Number(minor):Number.NaN;}
 export function parseQuantity(value:string,decimals:number){const normalized=value.trim();if(!/^\d+(?:\.\d+)?$/.test(normalized))return Number.NaN;const [whole,fraction='']=normalized.split('.');if(fraction.length>decimals)return Number.NaN;const atomic=BigInt(whole)*(10n**BigInt(decimals))+BigInt((fraction+'0'.repeat(decimals)).slice(0,decimals)||'0');return atomic<=BigInt(Number.MAX_SAFE_INTEGER)?Number(atomic):Number.NaN;}
 export function makeTransaction(type:DemoTransaction['type'],symbol:string,qty:number,amount:number,fee:number,note:string):DemoTransaction{

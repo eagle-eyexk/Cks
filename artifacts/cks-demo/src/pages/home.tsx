@@ -7,7 +7,7 @@ import './home.css';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const route = (path: string) => `${base}${path}`;
-const logo = `${base}/cks-logo-reference.jpeg`;
+const logo = `${base}/cks-green-icon.png`;
 
 function Brand() {
   const { t } = useLanguage();
@@ -62,7 +62,9 @@ function PortfolioPreview() {
 function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const closeMenu = () => setMenuOpen(false);
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
+  const money = (amount: number) =>
+    new Intl.NumberFormat(locale, { style: 'currency', currency: 'EUR' }).format(amount);
   usePageMetadata(
     t('Explore the CKS crypto demo'),
     t('Explore the CKS Crypto Klein Shop sandbox with transparent sample balances and simulated actions. No real funds or assets are handled.'),
@@ -71,12 +73,13 @@ function Home() {
   return (
     <main className="cks-home">
       <header className="cks-topbar">
-        <nav className="cks-nav cks-wrap" aria-label="Main navigation">
+        <nav className="cks-nav cks-wrap" aria-label={t('Main navigation')}>
           <Brand />
           <div className={`cks-navlinks${menuOpen ? ' is-open' : ''}`}>
             <a href="#about" onClick={closeMenu}>{t('About CKS')}</a>
             <a href="#explore" onClick={closeMenu}>{t('Explore the demo')}</a>
             <a href="#how-it-works" onClick={closeMenu}>{t('How it works')}</a>
+            <a href="#company" onClick={closeMenu}>{t('Company')}</a>
             <a href="#questions" onClick={closeMenu}>{t('Questions')}</a>
             <LanguageSwitcher className="cks-mobile-language" />
             <a className="cks-mobile-auth" href={route('/sign-in')} onClick={closeMenu}>{t('Log in')}</a>
@@ -137,6 +140,32 @@ function Home() {
         </div>
       </section>
 
+      <section className="cks-section cks-company" id="company">
+        <div className="cks-wrap cks-company-grid">
+          <div className="cks-section-heading">
+            <span className="cks-kicker">{t('Company information')}</span>
+            <h2>{t('A fictional concept with clear boundaries.')}</h2>
+            <p>{t('CKS Crypto Klein Shop is a fictional fintech product concept built for this interactive software demo. It is not a registered bank, exchange, wallet provider, or financial company.')}</p>
+          </div>
+          <dl className="cks-company-facts">
+            <div><dt>{t('Brand')}</dt><dd>CKS Crypto Klein Shop</dd></div>
+            <div><dt>{t('Company status')}</dt><dd>{t('Fictional demo concept; no registered financial entity is represented.')}</dd></div>
+            <div><dt>{t('Product')}</dt><dd>{t('Portfolio, markets, wallet, activity, card, and admin interface previews.')}</dd></div>
+            <div><dt>{t('Funds and assets')}</dt><dd>{t('No deposits, withdrawals, custody, or real transactions are available.')}</dd></div>
+            <div><dt>{t('Data and accounts')}</dt><dd>{t('Demo balances stay in this browser. Sign-in creates a demo profile only.')}</dd></div>
+            <div><dt>{t('Market information')}</dt><dd>{t('Market values are static examples, not current prices or investment advice.')}</dd></div>
+            <div><dt>{t('Fees and business terms')}</dt><dd>{t('No real fee schedule, commercial offer, or redemption promise exists.')}</dd></div>
+             <div><dt>{t('Legal identity')}</dt><dd>{t('No real legal entity, registered address, or jurisdiction is represented.')}</dd></div>
+             <div><dt>{t('Regulatory status')}</dt><dd>{t('No banking, investment, payment, or digital-asset licence is claimed.')}</dd></div>
+             <div><dt>{t('Engineering model')}</dt><dd>{t('A standalone-style interface with browser-local demo state and managed demo sign-in.')}</dd></div>
+             <div><dt>{t('External integrations')}</dt><dd>{t('No exchange, payment processor, custody, market-data, or blockchain connection is configured.')}</dd></div>
+             <div><dt>{t('CKS digital asset')}</dt><dd>{t('No CKS token has been issued. The brand mark is a visual product concept only.')}</dd></div>
+             <div><dt>{t('Languages')}</dt><dd>{t('English and German interface text are available in this demo.')}</dd></div>
+            <div><dt>{t('Contact and support')}</dt><dd>{t('No real office, support team, or customer contact channel is configured.')}</dd></div>
+          </dl>
+        </div>
+      </section>
+
       <section className="cks-section cks-explore" id="explore">
         <div className="cks-wrap cks-explore-layout">
           <div className="cks-explore-copy">
@@ -157,6 +186,23 @@ function Home() {
             <div className="cks-asset-row"><div className="cks-asset-name"><span className="cks-coin">Ξ</span><span><strong>Ethereum</strong><small>ETH</small></span></div><div className="cks-asset-value">2.450 ETH</div><div><div className="cks-asset-value">{money(7915)}</div><div className="cks-asset-change">{t('Example')}</div></div></div>
             <div className="cks-asset-row"><div className="cks-asset-name"><span className="cks-coin">S</span><span><strong>Solana</strong><small>SOL</small></span></div><div className="cks-asset-value">18.000 SOL</div><div><div className="cks-asset-value">{money(4425)}</div><div className="cks-asset-change">{t('Example')}</div></div></div>
             <div className="cks-board-foot"><span className="cks-info-dot">i</span>{t('Assets, balances, and values shown are fictional sample data for demonstration.')}</div>
+          </div>
+        </div>
+      </section>
+
+      <section className="cks-section cks-ecosystem" id="ecosystem">
+        <div className="cks-wrap">
+          <div className="cks-section-heading">
+            <span className="cks-kicker">{t('The CKS demo ecosystem')}</span>
+            <h2>{t('One workspace, connected experiences.')}</h2>
+            <p>{t('Explore a standalone-style product flow through linked modules. Every value and control remains a local simulation.')}</p>
+          </div>
+          <div className="cks-ecosystem-grid">
+            <a href={route('/dashboard')}><strong>{t('Portfolio dashboard')}</strong><span>{t('Review sample balances and a simulated portfolio overview.')}</span><ArrowRight size={16}/></a>
+            <a href={route('/markets')}><strong>{t('Market explorer')}</strong><span>{t('Browse fixed reference values, clearly marked as examples.')}</span><ArrowRight size={16}/></a>
+            <a href={route('/wallet')}><strong>{t('Wallet workspace')}</strong><span>{t('Try browser-local send and receive previews without network access.')}</span><ArrowRight size={16}/></a>
+            <a href={route('/activity')}><strong>{t('Activity journal')}</strong><span>{t('Filter and inspect simulated records and demo references.')}</span><ArrowRight size={16}/></a>
+            <a href={route('/admin')}><strong>{t('Admin preview')}</strong><span>{t('See fictional operations metrics and local demo controls.')}</span><ArrowRight size={16}/></a>
           </div>
         </div>
       </section>

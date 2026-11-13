@@ -13,6 +13,7 @@ import Activity from '@/pages/activity';
 import CardPage from '@/pages/card';
 import Dashboard from '@/pages/dashboard';
 import Home from '@/pages/home';
+import AdminPage from '@/pages/admin';
 import Markets from '@/pages/markets';
 import NotFound from '@/pages/not-found';
 import SettingsPage from '@/pages/settings';
@@ -52,7 +53,7 @@ const clerkAppearance = {
   options: {
     logoPlacement: 'inside' as const,
     logoLinkUrl: basePath || '/',
-    logoImageUrl: `${window.location.origin}${basePath}/logo.svg`,
+    logoImageUrl: `${window.location.origin}${basePath}/cks-green-icon.png`,
   },
   variables: {
     colorPrimary: '#243e5d',
@@ -120,7 +121,7 @@ function AuthFrame({ children }: { children: ReactNode }) {
             href={`${basePath || ''}/`}
             aria-label={t('CKS Crypto Klein Shop home')}
           >
-            <img src={`${basePath}/logo.svg`} alt="" />
+            <img src={`${basePath}/cks-green-icon.png`} alt="" />
             <span><strong>CKS</strong> Crypto Klein Shop</span>
           </a>
           <LanguageSwitcher className="cks-auth-language" />
@@ -174,7 +175,11 @@ function DemoRoutes() {
     return <div className="cks-loading" role="status">{t('Loading the CKS demo…')}</div>;
   }
 
-  const storageScope = userId ? `user-${userId}` : 'guest';
+  if (!userId) {
+    return <Redirect to="/sign-in" />;
+  }
+
+  const storageScope = `user-${userId}`;
 
   return (
     <DemoProvider key={storageScope} storageScope={storageScope}>
@@ -188,6 +193,7 @@ function DemoRoutes() {
             <Route path="/activity" component={Activity} />
             <Route path="/card" component={CardPage} />
             <Route path="/settings" component={SettingsPage} />
+            <Route path="/admin" component={AdminPage} />
             <Route component={NotFound} />
           </Switch>
         </RoutedErrorBoundary>

@@ -14,8 +14,9 @@ const links=[
   {href:'/activity',label:'Activity',Icon:Activity},
   {href:'/card',label:'Card preview',Icon:CreditCard},
   {href:'/settings',label:'Settings',Icon:Settings},
+  {href:'/admin',label:'Admin preview',Icon:ShieldCheck},
 ];
-export function Brand(){return <div className="brand"><div className="brand-mark"><ShieldCheck size={22}/></div><div><div className="brand-name">CKS</div><div className="brand-sub">Crypto Klein Shop</div></div></div>}
+export function Brand(){return <div className="brand"><div className="brand-mark"><img src={`${import.meta.env.BASE_URL}cks-green-icon.png`} alt="" /></div><div><div className="brand-name">CKS</div><div className="brand-sub">Crypto Klein Shop</div></div></div>}
 export function Shell({children}:{children:ReactNode}){
  const [location]=useLocation();const {notice,dismiss}=useDemo();const {isLoaded,isSignedIn,user}=useUser();const {signOut}=useClerk();const {t}=useLanguage();
  const initials=`${user?.firstName?.[0]??''}${user?.lastName?.[0]??''}`||'CK';
